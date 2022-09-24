@@ -21,10 +21,15 @@ public class Main {
                     24, 25, 26, 27, 28, 29, 28, 29, 30, 31, 32, 1 };
 
         //permuted choice 1
-        int PC1[] = { 57, 49, 41, 33, 25, 17, 9,  63, 55, 47, 39, 31, 23, 15,
-                      1,  58, 50, 42, 34, 26, 18, 7,  62, 54, 46, 38, 30, 22,
-                      10, 2,  59, 51, 43, 35, 27, 14, 6,  61, 53, 45, 37, 29,
-                      19, 11, 3,  60, 52, 44, 36, 21, 13, 5,  28, 20, 12, 4 };
+        int PC1[] = { 57, 49, 41, 33, 25, 17, 9,
+                      1,  58, 50, 42, 34, 26, 18,
+                      10, 2,  59, 51, 43, 35, 27,
+                      19, 11, 3,  60, 52, 44, 36,
+                      63, 55, 47, 39, 31, 23, 15,
+                      7,  62, 54, 46, 38, 30, 22,
+                      14, 6,  61, 53, 45, 37, 29,
+                      21, 13, 5,  28, 20, 12, 4  };
+
 
         //shift table
         int shift[] = { 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1 };
@@ -94,7 +99,7 @@ public class Main {
                 33, 1, 41, 9,  49, 17, 57, 25 };
 
 
-
+        //ASCII characters to 64-bit binary
         String asciiToBinary(String s) {
             byte[] bytes = s.getBytes();
             StringBuilder binary = new StringBuilder();
@@ -110,11 +115,61 @@ public class Main {
             return binary + "";
         }
 
-        String binaryToAscii(){
+        //64-bit binary to ASCII character
+        String binaryToAscii(String bin){
+            String input = bin;
+            int counter = 8;
+            int value = 0;
+            String output = "";
+            for(int i = 0; i < input.length(); i++){
+                if(counter > 0){
+                    if(input.charAt(i) == '1') {
+                        value = value + (int) Math.pow(2, counter - 1);
+                        System.out.print("1");
+                    }
+                    else{
+                        System.out.print("0");
+                    }
+                    counter--;
+                }
+                if(counter == 0){
+                    counter = 8;
+                    output = output + (char)value;
+                    value = 0;
+                }
+                //System.out.println("Value:" + value + "Counter:" + counter);
+            }
+            return output;
+        }
+
+        String selector(String input, int table[]){
+            input = asciiToBinary(input);
+            String output = "";
+            for(int i = 0; i < table.length; i++){
+                output = output + input.charAt(table[i] - 1);
+            }
+            output = binaryToAscii(output);
+            return output;
+        }
+
+        String shifter(String input, int bits){
+
             return "";
         }
 
-        String roundRobbin() {
+        String keySchedule(String key){
+            String keySchedule[] = new String[16];
+            key = selector(key, PC1);
+            return key;
+        }
+
+        String roundRobbin(String input, String key, int round) {
+
+            return "";
+        }
+
+        String encryptor(String plaintext, String key){
+            selector(key, IP);
             return "";
         }
     }
@@ -124,9 +179,10 @@ public class Main {
         String plaintext = "honolulu";
         String key = "madiisen";
         DES cipher = new DES();
-        System.out.println(cipher.asciiToBinary(plaintext));
-        System.out.println(cipher.asciiToBinary(key));
-
+        System.out.println(cipher.binaryToAscii(cipher.asciiToBinary(plaintext)));
+        System.out.println(cipher.binaryToAscii(cipher.asciiToBinary(key)));
+        System.out.println(cipher.encryptor(plaintext, key));
+        System.out.println(cipher.keySchedule(key));
 
 
     }
