@@ -1,5 +1,8 @@
 package com.company;
 import java.util.*;
+import java.util.HashMap;
+
+//ENCRYPT VIA DATA ENCRYPTION STANDARD
 
 public class Main {
 
@@ -11,6 +14,7 @@ public class Main {
                      62, 54, 46, 38, 30, 22, 14, 6,
                      64, 56, 48, 40, 32, 24, 16, 8,
                      57, 49, 41, 33, 25, 17, 9,  1,
+                     59, 51, 43, 35, 27, 19, 11, 3,
                      61, 53, 45, 37, 29, 21, 13, 5,
                      63, 55, 47, 39, 31, 23, 15, 7 };
 
@@ -125,16 +129,12 @@ public class Main {
                 if(counter > 0){
                     if(input.charAt(i) == '1') {
                         value = value + (int) Math.pow(2, counter - 1);
-                        System.out.print("1");
-                    }
-                    else{
-                        System.out.print("0");
                     }
                     counter--;
                 }
-                if(counter == 0){
+                if(counter == 0) {
                     counter = 8;
-                    output = output + (char)value;
+                    output = output + (char) value;
                     value = 0;
                 }
                 //System.out.println("Value:" + value + "Counter:" + counter);
@@ -142,24 +142,94 @@ public class Main {
             return output;
         }
 
-        String selector(String input, int table[]){
-            input = asciiToBinary(input);
+
+        String hexToBinary(String input){
             String output = "";
+            input = input.toUpperCase();
+
+            HashMap<Character, String> hashMap = new HashMap<Character, String>();
+            hashMap.put('0', "0000");
+            hashMap.put('1', "0001");
+            hashMap.put('2', "0010");
+            hashMap.put('3', "0011");
+            hashMap.put('4', "0100");
+            hashMap.put('5', "0101");
+            hashMap.put('6', "0110");
+            hashMap.put('7', "0111");
+            hashMap.put('8', "1000");
+            hashMap.put('9', "1001");
+            hashMap.put('A', "1010");
+            hashMap.put('B', "1011");
+            hashMap.put('C', "1100");
+            hashMap.put('D', "1101");
+            hashMap.put('E', "1110");
+            hashMap.put('F', "1111");
+
+            char c;
+            for(int i = 0; i < input.length(); i++) {
+                c = input.charAt(i);
+                if(hashMap.containsKey(c)){
+                    output = output + hashMap.get(c);
+                }
+                else{
+                    output = "Invalid string.";
+                    return output;
+                }
+            }
+            return output;
+        }
+
+        String binaryToHex(String input){
+            int n = input.length() / 4;
+            input = Long.toHexString(Long.parseUnsignedLong(input, 2));
+            while (input.length() < n) {
+                input = "0" + input;
+            }
+            return input.toUpperCase();
+        }
+
+        String transposer(String input, int table[]){
+            input = hexToBinary(input);
+            String output = "";
+
             for(int i = 0; i < table.length; i++){
                 output = output + input.charAt(table[i] - 1);
             }
-            output = binaryToAscii(output);
+            output = binaryToHex(output);
+
             return output;
         }
 
         String shifter(String input, int bits){
+            input = hexToBinary(input);
+            int len = input.length();
+            int array[] = new int[len];
+            int x = 1;
+            while(x < bits + 1){
+                array[len - bits + x - 1] = x;
+                x++;
+            }
 
-            return "";
+            for(int i = 0 + bits; i < len; i++){
+                array[i - bits] = i + 1;
+            }
+
+            //System.out.println(input); //CHECK BIT SHIFT
+            input = binaryToHex(input);
+
+            input = transposer(input, array);
+            //System.out.println(hexToBinary(input)); // CHECK BIT SHIFT
+            System.out.println(input + "   | " + bits + " bit(s) shifted");
+            return input;
         }
 
         String keySchedule(String key){
             String keySchedule[] = new String[16];
-            key = selector(key, PC1);
+
+            key = transposer(key, PC1);
+            for(int i = 0; i < 1; i++){
+                shifter(key, shift[i]);
+            }
             return key;
         }
 
@@ -169,21 +239,26 @@ public class Main {
         }
 
         String encryptor(String plaintext, String key){
-            selector(key, IP);
-            return "";
+            String text = transposer(plaintext, IP);
+
+            return text;
         }
     }
 
 
     public static void main(String[] args) {
-        String plaintext = "honolulu";
-        String key = "madiisen";
+        //String plaintext = "123456ABCD132536";
+        //String key = "AABB09182736CCDD";
+        String plaintext = "4D61646973656E53";
+        String key = "4348414D50494F4E";
         DES cipher = new DES();
-        System.out.println(cipher.binaryToAscii(cipher.asciiToBinary(plaintext)));
-        System.out.println(cipher.binaryToAscii(cipher.asciiToBinary(key)));
-        System.out.println(cipher.encryptor(plaintext, key));
-        System.out.println(cipher.keySchedule(key));
 
 
+        //System.out.println(cipher.binaryToAscii(cipher.asciiToBinary(plaintext)));
+        //System.out.println(cipher.binaryToAscii(cipher.asciiToBinary(key)));
+        System.out.println(cipher.encryptor(plaintext, key) + " | IP (64 bit)");
+        System.out.println(cipher.keySchedule(key) + "   | PC1 (56 bit)");
+        System.out.println("Text: " + plaintext + " = " + cipher.binaryToAscii(cipher.hexToBinary(plaintext)));
+        System.out.println("Key:  " + key + " = " + cipher.binaryToAscii(cipher.hexToBinary(key)));
     }
 }
