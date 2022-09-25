@@ -95,12 +95,13 @@ public class Main {
 
         //final permutation
         int FP[] = { 40, 8, 48, 16, 56, 24, 64, 32,
-                39, 7, 47, 15, 55, 23, 63, 31,
-                38, 6, 46, 14, 54, 22, 62, 30,
-                36, 4, 44, 12, 52, 20, 60, 28,
-                35, 3, 43, 11, 51, 19, 59, 27,
-                34, 2, 42, 10, 50, 18, 58, 26,
-                33, 1, 41, 9,  49, 17, 57, 25 };
+                     39, 7, 47, 15, 55, 23, 63, 31,
+                     38, 6, 46, 14, 54, 22, 62, 30,
+                     37, 5, 45, 13, 53, 21, 61, 29,
+                     36, 4, 44, 12, 52, 20, 60, 28,
+                     35, 3, 43, 11, 51, 19, 59, 27,
+                     34, 2, 42, 10, 50, 18, 58, 26,
+                     33, 1, 41, 9,  49, 17, 57, 25 };
 
 
         //ASCII characters to 64-bit binary
@@ -142,7 +143,7 @@ public class Main {
             return output;
         }
 
-
+        //Hexadecimal to binary
         String hexToBinary(String input){
             String output = "";
             input = input.toUpperCase();
@@ -179,6 +180,7 @@ public class Main {
             return output;
         }
 
+        //Binary to hexadecimal
         String binaryToHex(String input){
             int n = input.length() / 4;
             input = Long.toHexString(Long.parseUnsignedLong(input, 2));
@@ -188,6 +190,7 @@ public class Main {
             return input.toUpperCase();
         }
 
+        //Calculates transposition given a permutation table
         String transposer(String input, int table[]){
             input = hexToBinary(input);
             String output = "";
@@ -200,6 +203,7 @@ public class Main {
             return output;
         }
 
+        //Bit shift operation for subkey generation by round
         String shifter(String input, int bits){
 
             input = hexToBinary(input);
@@ -217,53 +221,142 @@ public class Main {
             for(int ii = 0; ii < array.length; ii++){
                 //System.out.print(array[ii] + " ");
             }
-            System.out.println(input); //CHECK BIT SHIFT
+            //System.out.println(input); //CHECK BIT SHIFT
             input = binaryToHex(input);
 
             input = transposer(input, array);
-            System.out.println(hexToBinary(input)); // CHECK BIT SHIFT
-            System.out.println(input + "   | " + bits + " bit(s) shifted");
+            //System.out.println(hexToBinary(input)); // CHECK BIT SHIFT
+            //System.out.println(input + "   | " + bits + " bit(s) shifted");
             return input;
         }
 
-        String keySchedule(String key){
+        //Exclusive-or operation on two given inputs
+        String xor(String input, String input2){
+            String i1 = hexToBinary(input);
+            String i2 = hexToBinary(input2);
+
+            String builder = "";
+
+            for(int i = 0; i < i1.length(); i++){
+                if(i1.charAt(i) == i2.charAt(i)){
+                    builder = builder + "0";
+                }
+                else{
+                    builder = builder + "1";
+                }
+            }
+
+            //System.out.println(i1 + "\n" + i2);
+            //System.out.println(builder);
+            builder = binaryToHex(builder);
+            return builder;
+        }
+
+        /*
+        [x][][] = num, det by each 6-bit group
+        [][x][] = row, det by bit 1 & 6 of 6-bit group
+        [][][x] = col, det by bit 2 - 5 of 6-bit group
+         */
+        //Substitution box permutation
+        String sbox(String input, int sbox[][][]){
+            String builder = "";
+            String sixbit = "";
+            input = hexToBinary(input);
+
+            int num, row, col;
+            for(int i = 0; i < 48; i = i + 6){
+                sixbit = input.substring(i, i + 6);
+                num = i / 6;
+                row = Integer.parseInt(sixbit.charAt(0) + "" + sixbit.charAt(5), 2);
+                col = Integer.parseInt(sixbit.substring(1, 5), 2);
+                builder = builder + Integer.toHexString(sbox[num][row][col]);
+            }
+
+            return builder.toUpperCase();
+        }
+
+        /*
+         - Calculate subkey (48 bit)
+            - Apply PC1 (64 -> 56 bit)
+            - Shift split key (56 -> [x2]28 bit) and combine
+            - Apply PC2 (56 -> 48 bit)
+         */
+        String[] keySchedule(String key){
             String keySchedule[] = new String[16];
 
             key = transposer(key, PC1);
-            System.out.println(key);
-            for(int i = 0; i < 1; i++){
+            for(int i = 0; i < 16; i++){
                 key = shifter(key.substring(0, key.length()/2), shift[i]) + shifter(key.substring(key.length()/2, key.length()), shift[i]);
+                keySchedule[i] = transposer(key, PC2);
             }
-            return key;
+            return keySchedule;
         }
 
-        String roundRobbin(String input, String key, int round) {
+        /*
+        - Determine L(control) & R(function) block (32 bit)
+         - Expansion of R-block (32 -> 48 bit)
+         - subkey XOR expanded R-block
+         - S-box
+         - P-box
+         */
+        //Performs all Feistel Function operations by round
+        String feistel(String input, String key, int round){
+            String leftBlock = input.substring(0, 8);
+            String rightBlock = input.substring(8, 16);
+            String exp = rightBlock;
+            String output;
 
-            return "";
+            exp = transposer(exp, E);
+            exp = xor(exp, key);
+            exp = sbox(exp, S);
+            exp = transposer(exp, P);
+            leftBlock = xor(leftBlock, exp);
+
+            output = rightBlock + leftBlock;
+            System.out.println(output);
+            return output;
         }
 
+        //Encryption function
         String encryptor(String plaintext, String key){
-            String text = transposer(plaintext, IP);
 
-            return text;
+            String ciphertext = transposer(plaintext, IP);
+
+            String[] keySchedule = keySchedule(key);
+            for(int i = 0; i < 16; i++){
+                //System.out.println("Round " + (i + 1) + ": "+ keySchedule[i]);
+                System.out.print("Round " + (i + 1) + ": ");
+                ciphertext = feistel(ciphertext, keySchedule[i], i);
+
+            }
+            ciphertext = ciphertext.substring(8, 16) + ciphertext.substring(0, 8);
+            ciphertext = transposer(ciphertext, FP);
+
+            return ciphertext;
+        }
+
+        //Decryption function
+        String decryptor(String ciphertext, String key){
+            String plaintext = "";
+            return plaintext;
         }
     }
 
 
     public static void main(String[] args) {
-        //String plaintext = "123456ABCD132536";
-        //String key = "AABB09182736CCDD";
-        String plaintext = "4D61646973656E53";
-        String key = "4348414D50494F4E";
+        String plaintext = "123456ABCD132536";
+        String key = "AABB09182736CCDD";
+        //String plaintext = "4D61646973656E53";
+        //String key = "4348414D50494F4E";
         DES cipher = new DES();
 
-
-        //System.out.println(cipher.binaryToAscii(cipher.asciiToBinary(plaintext)));
-        //System.out.println(cipher.binaryToAscii(cipher.asciiToBinary(key)));
-        System.out.println(cipher.encryptor(plaintext, key) + " | IP (64 bit)");
-        System.out.println(cipher.keySchedule(key) + "   | PC1 (56 bit)");
+        //call key schedule here
         System.out.println("Text: " + plaintext + " = " + cipher.binaryToAscii(cipher.hexToBinary(plaintext)));
         System.out.println("Key:  " + key + " = " + cipher.binaryToAscii(cipher.hexToBinary(key)));
-        System.out.println(cipher.hexToBinary("01FE0028391D41"));
+        System.out.println();
+        System.out.println("Ciphertext: " + cipher.encryptor(plaintext, key));
+
+        //System.out.println(cipher.xor("A0924A11592E", "1BF9282F0680") + " | XOR");
+
     }
 }
