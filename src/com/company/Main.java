@@ -201,6 +201,7 @@ public class Main {
         }
 
         String shifter(String input, int bits){
+
             input = hexToBinary(input);
             int len = input.length();
             int array[] = new int[len];
@@ -213,12 +214,14 @@ public class Main {
             for(int i = 0 + bits; i < len; i++){
                 array[i - bits] = i + 1;
             }
-
-            //System.out.println(input); //CHECK BIT SHIFT
+            for(int ii = 0; ii < array.length; ii++){
+                //System.out.print(array[ii] + " ");
+            }
+            System.out.println(input); //CHECK BIT SHIFT
             input = binaryToHex(input);
 
             input = transposer(input, array);
-            //System.out.println(hexToBinary(input)); // CHECK BIT SHIFT
+            System.out.println(hexToBinary(input)); // CHECK BIT SHIFT
             System.out.println(input + "   | " + bits + " bit(s) shifted");
             return input;
         }
@@ -227,8 +230,9 @@ public class Main {
             String keySchedule[] = new String[16];
 
             key = transposer(key, PC1);
+            System.out.println(key);
             for(int i = 0; i < 1; i++){
-                shifter(key, shift[i]);
+                key = shifter(key.substring(0, key.length()/2), shift[i]) + shifter(key.substring(key.length()/2, key.length()), shift[i]);
             }
             return key;
         }
@@ -260,5 +264,6 @@ public class Main {
         System.out.println(cipher.keySchedule(key) + "   | PC1 (56 bit)");
         System.out.println("Text: " + plaintext + " = " + cipher.binaryToAscii(cipher.hexToBinary(plaintext)));
         System.out.println("Key:  " + key + " = " + cipher.binaryToAscii(cipher.hexToBinary(key)));
+        System.out.println(cipher.hexToBinary("01FE0028391D41"));
     }
 }
