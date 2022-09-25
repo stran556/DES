@@ -288,6 +288,7 @@ public class Main {
             for(int i = 0; i < 16; i++){
                 key = shifter(key.substring(0, key.length()/2), shift[i]) + shifter(key.substring(key.length()/2, key.length()), shift[i]);
                 keySchedule[i] = transposer(key, PC2);
+                //System.out.println("Round " + (i + 1) + ": " + keySchedule[i]);
             }
             return keySchedule;
         }
@@ -313,7 +314,7 @@ public class Main {
             leftBlock = xor(leftBlock, exp);
 
             output = rightBlock + leftBlock;
-            System.out.println(output);
+            //System.out.println(output);
             return output;
         }
 
@@ -324,10 +325,8 @@ public class Main {
 
             String[] keySchedule = keySchedule(key);
             for(int i = 0; i < 16; i++){
-                //System.out.println("Round " + (i + 1) + ": "+ keySchedule[i]);
-                System.out.print("Round " + (i + 1) + ": ");
+                //System.out.print("Round " + (i + 1) + ": ");
                 ciphertext = feistel(ciphertext, keySchedule[i], i);
-
             }
             ciphertext = ciphertext.substring(8, 16) + ciphertext.substring(0, 8);
             ciphertext = transposer(ciphertext, FP);
@@ -337,7 +336,15 @@ public class Main {
 
         //Decryption function
         String decryptor(String ciphertext, String key){
-            String plaintext = "";
+            String plaintext = transposer(ciphertext, IP);
+
+            String[] keySchedule = keySchedule(key);
+            for(int i = 15; i > -1; i--){
+                //System.out.print("Round " + (i + 1) + ": ");
+                plaintext = feistel(plaintext, keySchedule[i], 15 - i);
+            }
+            plaintext = plaintext.substring(8, 16) + plaintext.substring(0, 8);
+            plaintext = transposer(plaintext, FP);
             return plaintext;
         }
     }
@@ -345,18 +352,21 @@ public class Main {
 
     public static void main(String[] args) {
         String plaintext = "123456ABCD132536";
-        String key = "AABB09182736CCDD";
+        String key =       "AABB09182736CCDD";
         //String plaintext = "4D61646973656E53";
-        //String key = "4348414D50494F4E";
-        DES cipher = new DES();
+        //String key =       "4348414D50494F4E";
 
-        //call key schedule here
-        System.out.println("Text: " + plaintext + " = " + cipher.binaryToAscii(cipher.hexToBinary(plaintext)));
-        System.out.println("Key:  " + key + " = " + cipher.binaryToAscii(cipher.hexToBinary(key)));
-        System.out.println();
-        System.out.println("Ciphertext: " + cipher.encryptor(plaintext, key));
+        DES des = new DES();
+        String ciphertext = des.encryptor(plaintext, key);
 
-        //System.out.println(cipher.xor("A0924A11592E", "1BF9282F0680") + " | XOR");
+
+        //call encryptor/decryptor here
+        System.out.println("Plaintext:  " + plaintext + " = " + des.binaryToAscii(des.hexToBinary(plaintext)));
+        System.out.println("Key:        " + key + " = " + des.binaryToAscii(des.hexToBinary(key)) + "");
+
+        System.out.println("Encryptor:  " + ciphertext);
+        System.out.println("Decryptor:  " + des.decryptor(ciphertext, key));
+
 
     }
 }
