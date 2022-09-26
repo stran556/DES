@@ -1,10 +1,12 @@
 package com.company;
-import java.util.*;
 import java.util.HashMap;
 
-//ENCRYPT VIA DATA ENCRYPTION STANDARD
+//64-BIT ENCRYPTION/DECRYPTION VIA DATA ENCRYPTION STANDARD
 
 public class Main {
+
+    //Toggle print operations
+    private static boolean printOp = false;
 
     private static class DES {
 
@@ -191,7 +193,7 @@ public class Main {
         }
 
         //Calculates transposition given a permutation table
-        String transposer(String input, int table[]){
+        String transpose(String input, int table[]){
             input = hexToBinary(input);
             String output = "";
 
@@ -224,7 +226,7 @@ public class Main {
             //System.out.println(input); //CHECK BIT SHIFT
             input = binaryToHex(input);
 
-            input = transposer(input, array);
+            input = transpose(input, array);
             //System.out.println(hexToBinary(input)); // CHECK BIT SHIFT
             //System.out.println(input + "   | " + bits + " bit(s) shifted");
             return input;
@@ -284,10 +286,10 @@ public class Main {
         String[] keySchedule(String key){
             String keySchedule[] = new String[16];
 
-            key = transposer(key, PC1);
+            key = transpose(key, PC1);
             for(int i = 0; i < 16; i++){
                 key = shifter(key.substring(0, key.length()/2), shift[i]) + shifter(key.substring(key.length()/2, key.length()), shift[i]);
-                keySchedule[i] = transposer(key, PC2);
+                keySchedule[i] = transpose(key, PC2);
                 //System.out.println("Round " + (i + 1) + ": " + keySchedule[i]);
             }
             return keySchedule;
@@ -307,10 +309,10 @@ public class Main {
             String exp = rightBlock;
             String output;
 
-            exp = transposer(exp, E);
+            exp = transpose(exp, E);
             exp = xor(exp, key);
             exp = sbox(exp, S);
-            exp = transposer(exp, P);
+            exp = transpose(exp, P);
             leftBlock = xor(leftBlock, exp);
 
             output = rightBlock + leftBlock;
@@ -319,9 +321,9 @@ public class Main {
         }
 
         //Encryption function
-        String encryptor(String plaintext, String key){
+        String encrypt(String plaintext, String key){
 
-            String ciphertext = transposer(plaintext, IP);
+            String ciphertext = transpose(plaintext, IP);
 
             String[] keySchedule = keySchedule(key);
             for(int i = 0; i < 16; i++){
@@ -329,14 +331,14 @@ public class Main {
                 ciphertext = feistel(ciphertext, keySchedule[i], i);
             }
             ciphertext = ciphertext.substring(8, 16) + ciphertext.substring(0, 8);
-            ciphertext = transposer(ciphertext, FP);
+            ciphertext = transpose(ciphertext, FP);
 
             return ciphertext;
         }
 
         //Decryption function
-        String decryptor(String ciphertext, String key){
-            String plaintext = transposer(ciphertext, IP);
+        String decrypt(String ciphertext, String key){
+            String plaintext = transpose(ciphertext, IP);
 
             String[] keySchedule = keySchedule(key);
             for(int i = 15; i > -1; i--){
@@ -344,28 +346,54 @@ public class Main {
                 plaintext = feistel(plaintext, keySchedule[i], 15 - i);
             }
             plaintext = plaintext.substring(8, 16) + plaintext.substring(0, 8);
-            plaintext = transposer(plaintext, FP);
+            plaintext = transpose(plaintext, FP);
+            return plaintext;
+        }
+
+        String encryptTripleDES(String plaintext, String key, String key2, String key3){
+            String ciphertext = encrypt(plaintext, key);
+            ciphertext = decrypt(ciphertext, key2);
+            ciphertext = encrypt(ciphertext, key3);
+
+            return ciphertext;
+        }
+
+        String decryptTripleDES(String ciphertext, String key, String key2, String key3){
+            String plaintext = decrypt(ciphertext, key3);
+            plaintext = encrypt(plaintext, key2);
+            plaintext = decrypt(plaintext, key);
+
             return plaintext;
         }
     }
-
-
+    
     public static void main(String[] args) {
-        String plaintext = "123456ABCD132536";
-        String key =       "AABB09182736CCDD";
-        //String plaintext = "4D61646973656E53";
-        //String key =       "4348414D50494F4E";
+        //64-bit hexadecimal
+        String text = "4D61646973656E53";
+        String key =  "4348414D50494F4E";
+
+        //For 3DES
+        String key2 = "4C4F4E47484F524E";
+        String key3 = "6669726562616C6C";
 
         DES des = new DES();
-        String ciphertext = des.encryptor(plaintext, key);
 
+        String ciphertext = des.encrypt(text, key);
 
-        //call encryptor/decryptor here
-        System.out.println("Plaintext:  " + plaintext + " = " + des.binaryToAscii(des.hexToBinary(plaintext)));
-        System.out.println("Key:        " + key + " = " + des.binaryToAscii(des.hexToBinary(key)) + "");
+        System.out.println("            Hex-------------   Ascii---");
+        System.out.println("Plaintext:  " + text + "   " + des.binaryToAscii(des.hexToBinary(text)));
+        System.out.println("Key:        " + key + "   " + des.binaryToAscii(des.hexToBinary(key)));
+        System.out.println("Key2:       " + key + "   " + des.binaryToAscii(des.hexToBinary(key2)));
+        System.out.println("Key3:       " + key + "   " + des.binaryToAscii(des.hexToBinary(key3)) + "\n");
 
-        System.out.println("Encryptor:  " + ciphertext);
-        System.out.println("Decryptor:  " + des.decryptor(ciphertext, key));
+        System.out.println("DES\nEncrypted:  " + ciphertext + "   " + des.binaryToAscii(des.hexToBinary(ciphertext)));
+        String plaintext = des.decrypt(ciphertext, key);
+        System.out.println("Decrypted:  " + plaintext + "   " + des.binaryToAscii(des.hexToBinary(plaintext))+ "\n");
+
+        String ciphertextDES = des.encryptTripleDES(text, key, key2, key3);
+        System.out.println("3DES\nEncrypted:  " + ciphertextDES + "   " + des.binaryToAscii(des.hexToBinary(ciphertextDES)));
+        String plaintextDES = des.decryptTripleDES(ciphertextDES, key, key2, key3);
+        System.out.println("Decrypted:  " + plaintextDES + "   " + des.binaryToAscii(des.hexToBinary(plaintextDES)));
 
 
     }
