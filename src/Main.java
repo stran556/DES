@@ -324,7 +324,8 @@ public class Main {
 
         //Encryption function
         String encrypt(String plaintext, String key){
-
+            plaintext = "0000000000000000".substring(plaintext.length()) + plaintext;
+            key = "0000000000000000".substring(key.length()) + key;
             String ciphertext = transpose(plaintext, IP);
 
             String[] keySchedule = keySchedule(key);
@@ -340,6 +341,8 @@ public class Main {
 
         //Decryption function
         String decrypt(String ciphertext, String key){
+            ciphertext = "0000000000000000".substring(ciphertext.length()) + ciphertext;
+            key = "0000000000000000".substring(key.length()) + key;
             String plaintext = transpose(ciphertext, IP);
 
             String[] keySchedule = keySchedule(key);
@@ -354,6 +357,11 @@ public class Main {
 
         //3DES encryption function
         String encryptTripleDES(String plaintext, String key, String key2, String key3){
+            plaintext = "0000000000000000".substring(plaintext.length()) + plaintext;
+            key = "0000000000000000".substring(key.length()) + key;
+            key2 = "0000000000000000".substring(key2.length()) + key2;
+            key3 = "0000000000000000".substring(key3.length()) + key3;
+
             String ciphertext = encrypt(plaintext, key);
             ciphertext = decrypt(ciphertext, key2);
             ciphertext = encrypt(ciphertext, key3);
@@ -363,6 +371,11 @@ public class Main {
 
         //3DES decryption function
         String decryptTripleDES(String ciphertext, String key, String key2, String key3){
+            ciphertext = "0000000000000000".substring(ciphertext.length()) + ciphertext;
+            key = "0000000000000000".substring(key.length()) + key;
+            key2 = "0000000000000000".substring(key2.length()) + key2;
+            key3 = "0000000000000000".substring(key3.length()) + key3;
+
             String plaintext = decrypt(ciphertext, key3);
             plaintext = encrypt(plaintext, key2);
             plaintext = decrypt(plaintext, key);
@@ -429,8 +442,8 @@ public class Main {
                     if (manualInput == 1) { //DES/MANUAL/DES
                         Scanner c2 = new Scanner(System.in);
                         System.out.println("|---------------[DES]");
-                        System.out.println("|                 [1]ENCRYPT \n|                  [2]DECRYPT ");
-                        System.out.print("|                   ");
+                        System.out.println("|                 [1]ENCRYPT \n|                 [2]DECRYPT ");
+                        System.out.print("|                  ");
                         int inputDES = c2.nextInt();
                         if(inputDES == 1){
                             System.out.println("|-------------------[ENCRYPT]");
@@ -492,7 +505,7 @@ public class Main {
             }
         }
         catch(StringIndexOutOfBoundsException exception) {
-            System.out.println("Operation failed: Ensure all input is in 64-bit hexadecimal (16 characters, [1-9a-fA-F]).");
+            System.out.println("Operation failed: Ensure all input is in 64-bit hexadecimal (Allowed: [0123456789abcdef])");
         }
         catch(InputMismatchException exception){
             System.out.println("Operation failed: Invalid input.");
