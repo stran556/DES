@@ -380,54 +380,82 @@ public class Main {
         String key3 = "6669726562616C6C";
 
         DES des = new DES();
+        try {
+            String ciphertext = des.encrypt(text, key);
 
-        String ciphertext = des.encrypt(text, key);
+            System.out.println("[DES]");
+            System.out.println("  [1][FILE]\n  [2][MANUAL]");
+            Scanner sc = new Scanner(System.in);
+            int input = sc.nextInt();
+            if(input == 1) {
+                System.out.println("            Hex-------------   Ascii---");
+                System.out.println("Plaintext:  " + text + "   " + des.binaryToAscii(des.hexToBinary(text)));
+                System.out.println("Key:        " + key + "   " + des.binaryToAscii(des.hexToBinary(key)));
+                System.out.println("Key2:       " + key2 + "   " + des.binaryToAscii(des.hexToBinary(key2)));
+                System.out.println("Key3:       " + key3 + "   " + des.binaryToAscii(des.hexToBinary(key3)) + "\n");
 
-        System.out.println("[DES]");
-        System.out.println("  [1][FILE]\n  [2][MANUAL]");
-        Scanner sc = new Scanner(System.in);
-        int input = sc.nextInt();
-        if(input == 1) {
-            System.out.println("            Hex-------------   Ascii---");
-            System.out.println("Plaintext:  " + text + "   " + des.binaryToAscii(des.hexToBinary(text)));
-            System.out.println("Key:        " + key + "   " + des.binaryToAscii(des.hexToBinary(key)));
-            System.out.println("Key2:       " + key2 + "   " + des.binaryToAscii(des.hexToBinary(key2)));
-            System.out.println("Key3:       " + key3 + "   " + des.binaryToAscii(des.hexToBinary(key3)) + "\n");
+                System.out.println("DES\nEncrypted:  " + ciphertext + "   " + des.binaryToAscii(des.hexToBinary(ciphertext)));
+                String plaintext = des.decrypt(ciphertext, key);
+                System.out.println("Decrypted:  " + plaintext + "   " + des.binaryToAscii(des.hexToBinary(plaintext)) + "\n");
 
-            System.out.println("DES\nEncrypted:  " + ciphertext + "   " + des.binaryToAscii(des.hexToBinary(ciphertext)));
-            String plaintext = des.decrypt(ciphertext, key);
-            System.out.println("Decrypted:  " + plaintext + "   " + des.binaryToAscii(des.hexToBinary(plaintext)) + "\n");
+                String ciphertextDES = des.encryptTripleDES(text, key, key2, key3);
+                System.out.println("3DES\nEncrypted:  " + ciphertextDES + "   " + des.binaryToAscii(des.hexToBinary(ciphertextDES)));
+                String plaintextDES = des.decryptTripleDES(ciphertextDES, key, key2, key3);
+                System.out.println("Decrypted:  " + plaintextDES + "   " + des.binaryToAscii(des.hexToBinary(plaintextDES)));
+            }
+            if(input == 2){
+                Scanner c = new Scanner(System.in);
+                System.out.println("     [MANUAL]");
+                System.out.println("       [1][DES]\n       [2][3DES]");
+                int input1 = c.nextInt();
 
-            String ciphertextDES = des.encryptTripleDES(text, key, key2, key3);
-            System.out.println("3DES\nEncrypted:  " + ciphertextDES + "   " + des.binaryToAscii(des.hexToBinary(ciphertextDES)));
-            String plaintextDES = des.decryptTripleDES(ciphertextDES, key, key2, key3);
-            System.out.println("Decrypted:  " + plaintextDES + "   " + des.binaryToAscii(des.hexToBinary(plaintextDES)));
-        }
-        if(input == 2){
-            Scanner c = new Scanner(System.in);
-            System.out.println("     [MANUAL]");
-            System.out.println("       [1][DES]\n       [2][3DES]");
-            int input1 = c.nextInt();
-
-            if(input1 == 1) {
-                Scanner c2 = new Scanner(System.in);
-                System.out.println("          [DES]");
-                System.out.println("            [1][ENCRYPT]\n            [2][DECRYPT]");
-                int input11 = c2.nextInt();
-                System.out.println("64BIT[________________]");
-                System.out.print("[TXT] ");
-                Scanner sc2 = new Scanner(System.in);
-                String input2 = sc2.nextLine();
-                System.out.print("[KEY] ");
-                String input3 = sc2.nextLine();
-                if(input11 == 1) {
-                    System.out.println(des.encrypt(input2, input3));
+                if(input1 == 1) {
+                    Scanner c2 = new Scanner(System.in);
+                    System.out.println("          [DES]");
+                    System.out.println("            [1][ENCRYPT]\n            [2][DECRYPT]");
+                    int input11 = c2.nextInt();
+                    System.out.println("64BIT[________________]");
+                    System.out.print("[TXT] ");
+                    Scanner sc2 = new Scanner(System.in);
+                    String input2 = sc2.nextLine();
+                    System.out.print("[KEY] ");
+                    String input3 = sc2.nextLine();
+                    if(input11 == 1) {
+                        System.out.println(des.encrypt(input2, input3));
+                    }
+                    if(input11 == 2){
+                        System.out.println(des.decrypt(input2, input3));
+                    }
                 }
-                if(input11 == 2){
-                    System.out.println(des.decrypt(input2, input3));
-                }
+                if(input1 == 2){
+                    Scanner c3 = new Scanner(System.in);
+                    System.out.println("          [3DES]");
+                    System.out.println("            [1][ENCRYPT]\n            [2][DECRYPT]");
 
+                    int input11 = c3.nextInt();
+                    System.out.println("64BIT [________________]");
+                    System.out.print("[TEXT] ");
+                    Scanner sc2 = new Scanner(System.in);
+                    String input2 = sc2.nextLine();
+                    System.out.print("[KEY1] ");
+                    String input3 = sc2.nextLine();
+                    System.out.print("[KEY2] ");
+                    String input4 = sc2.nextLine();
+                    System.out.print("[KEY3] ");
+                    String input5 = sc2.nextLine();
+
+                    if(input11 == 1) {
+                        System.out.println(des.encryptTripleDES(input2, input3, input4, input5));
+                    }
+                    if(input11 == 2){
+                        System.out.println(des.decryptTripleDES(input2, input3, input4, input5));
+                    }
+                }
             }
         }
+        catch(StringIndexOutOfBoundsException exception) {
+            System.out.println("Operation failed: Ensure all input is in 64-bit hexadecimal (16 characters, [1-9a-fA-F]).");
+        }
     }
+
 }
