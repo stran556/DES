@@ -1,5 +1,6 @@
 package com.company;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 //64-BIT ENCRYPTION/DECRYPTION VIA DATA ENCRYPTION STANDARD
@@ -386,7 +387,9 @@ public class Main {
             System.out.println("[DES]");
             System.out.println("  [1][FILE]\n  [2][MANUAL]");
             Scanner sc = new Scanner(System.in);
+            System.out.print("   ");
             int input = sc.nextInt();
+
             if(input == 1) {
                 System.out.println("            Hex-------------   Ascii---");
                 System.out.println("Plaintext:  " + text + "   " + des.binaryToAscii(des.hexToBinary(text)));
@@ -403,37 +406,39 @@ public class Main {
                 String plaintextDES = des.decryptTripleDES(ciphertextDES, key, key2, key3);
                 System.out.println("Decrypted:  " + plaintextDES + "   " + des.binaryToAscii(des.hexToBinary(plaintextDES)));
             }
-            if(input == 2){
+            if(input == 2) {
                 Scanner c = new Scanner(System.in);
                 System.out.println("     [MANUAL]");
                 System.out.println("       [1][DES]\n       [2][3DES]");
+                System.out.print("        ");
                 int input1 = c.nextInt();
 
                 if(input1 == 1) {
                     Scanner c2 = new Scanner(System.in);
                     System.out.println("          [DES]");
                     System.out.println("            [1][ENCRYPT]\n            [2][DECRYPT]");
+                    System.out.print("             ");
                     int input11 = c2.nextInt();
-                    System.out.println("64BIT[________________]");
+                    System.out.println("64BIT[0123456789ABCDEF]");
                     System.out.print("[TXT] ");
                     Scanner sc2 = new Scanner(System.in);
                     String input2 = sc2.nextLine();
                     System.out.print("[KEY] ");
                     String input3 = sc2.nextLine();
                     if(input11 == 1) {
-                        System.out.println(des.encrypt(input2, input3));
+                        System.out.println("[OUT] " + des.encrypt(input2, input3));
                     }
                     if(input11 == 2){
-                        System.out.println(des.decrypt(input2, input3));
+                        System.out.println("[OUT] " + des.decrypt(input2, input3));
                     }
                 }
-                if(input1 == 2){
+                if(input1 == 2) {
                     Scanner c3 = new Scanner(System.in);
                     System.out.println("          [3DES]");
                     System.out.println("            [1][ENCRYPT]\n            [2][DECRYPT]");
-
+                    System.out.print("             ");
                     int input11 = c3.nextInt();
-                    System.out.println("64BIT [________________]");
+                    System.out.println("64-BIT[0123456789ABCDEF]");
                     System.out.print("[TEXT] ");
                     Scanner sc2 = new Scanner(System.in);
                     String input2 = sc2.nextLine();
@@ -445,16 +450,19 @@ public class Main {
                     String input5 = sc2.nextLine();
 
                     if(input11 == 1) {
-                        System.out.println(des.encryptTripleDES(input2, input3, input4, input5));
+                        System.out.println("[OUT+] " + des.encryptTripleDES(input2, input3, input4, input5));
                     }
                     if(input11 == 2){
-                        System.out.println(des.decryptTripleDES(input2, input3, input4, input5));
+                        System.out.println("[OUT-] " + des.decryptTripleDES(input2, input3, input4, input5));
                     }
                 }
             }
         }
         catch(StringIndexOutOfBoundsException exception) {
             System.out.println("Operation failed: Ensure all input is in 64-bit hexadecimal (16 characters, [1-9a-fA-F]).");
+        }
+        catch(InputMismatchException exception){
+            System.out.println("Operation failed: Invalid input.");
         }
     }
 
