@@ -437,8 +437,10 @@ public class Main {
 
             return Integer.toHexString(num);
         }
-
-
+        String[] xor(String[] input1, String[] input2) { //xor for 4 bytes at a time
+            
+            return input1;
+        }
         String[] rotWord(String input[]){
             //for(int i = 0; i < 4; i++){
             //    System.out.println(input[i]);
@@ -457,37 +459,48 @@ public class Main {
             return input;
         }
 
-        String subWord(String input[]){
+        String[] subWord(String input[]){
             for(int i = 0; i < 4; i++){
                 input[i] = sbox(input[i]);
-                System.out.println(input[i]);
             }
 
-            return "";
+            return input;
         }
 
-        String rCon(){
-            return "";
+        String[] rCon(String input[], int round) {
+            int rcon[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36}; //10 rounds
+
+            return input;
         }
+
 
         String keySchedule(String key){
             int len = key.length() / 2; //byte length
             String keySchedule[];
             String block[][] = stringToBlock(key.toLowerCase());
-            int round;
-
-            if(len == 32)
+            int round, rcon;
+            String input[];
+            if(len == 32) {
                 round = 14;
-            else if(len == 24)
+                rcon = 7;
+            }
+            else if(len == 24) {
                 round = 12;
-            else //len = 16
+                rcon = 8;
+            }
+            else { //len = 16
                 round = 10;
+                rcon = 10;
+            }
 
             for(int i = 0; i < 1; i++){
-                subWord(rotWord(block[3]));
-                //rotWord
-                //subWord
-                //rCon
+                if(i < rcon) {
+                    input = rCon(subWord(rotWord(block[3])), i);
+                }
+                else{
+                    input = subWord(rotWord(block[3]));
+                }
+
             }
 
 
