@@ -8,7 +8,9 @@ import java.util.Scanner;
 public class Main {
 
     //Toggle print operations
-    private static boolean printOp = false;
+    private static boolean printOpDES = false;
+    private static boolean printOpAES = true;
+
 
     private static class DES {
 
@@ -403,6 +405,51 @@ public class Main {
                          { 0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf },
                          { 0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16 } };
 
+        String hexToBinary(String input){
+            String output = "";
+            input = input.toUpperCase();
+
+            HashMap<Character, String> hashMap = new HashMap<Character, String>();
+            hashMap.put('0', "0000");
+            hashMap.put('1', "0001");
+            hashMap.put('2', "0010");
+            hashMap.put('3', "0011");
+            hashMap.put('4', "0100");
+            hashMap.put('5', "0101");
+            hashMap.put('6', "0110");
+            hashMap.put('7', "0111");
+            hashMap.put('8', "1000");
+            hashMap.put('9', "1001");
+            hashMap.put('A', "1010");
+            hashMap.put('B', "1011");
+            hashMap.put('C', "1100");
+            hashMap.put('D', "1101");
+            hashMap.put('E', "1110");
+            hashMap.put('F', "1111");
+
+            char c;
+            for(int i = 0; i < input.length(); i++) {
+                c = input.charAt(i);
+                if(hashMap.containsKey(c)){
+                    output = output + hashMap.get(c);
+                }
+                else{
+                    output = "Invalid string.";
+                    return output;
+                }
+            }
+            return output;
+        }
+
+        String binaryToHex(String input){
+            int n = input.length() / 4;
+            input = Long.toHexString(Long.parseUnsignedLong(input, 2));
+            while (input.length() < n) {
+                input = "0" + input;
+            }
+            return input.toUpperCase();
+        }
+
         String[][] stringToBlock(String input){ //COLUMN-MAJOR
             String block[][] = new String[4][4];
             int counter = 0;
@@ -437,15 +484,27 @@ public class Main {
 
             return Integer.toHexString(num);
         }
-        String[] xor(String[] input1, String[] input2) { //xor for 4 bytes at a time
-            
-            return input1;
-        }
-        String[] rotWord(String input[]){
-            //for(int i = 0; i < 4; i++){
-            //    System.out.println(input[i]);
-            //}
 
+        String[] xor(String[] input1, String[] input2) { //xor for 1 word (4 bytes) at a time
+            int len = input1.length;
+            String xor[] = new String[len];
+            String builder = "";
+            for(int i = 0; i < len; i++){
+                for(int ii = 0; ii < 8; ii++){
+                    if(hexToBinary(input1[i]).charAt(ii) == hexToBinary(input2[i]).charAt(ii)){
+                        builder = builder + "0";
+                    }
+                    else{
+                        builder = builder + "1";
+                    }
+                }
+                xor[i] = binaryToHex(builder).toLowerCase();
+                builder = "";
+            }
+            return xor;
+        }
+
+        String[] rotWord(String input[]){
             String temp = input[0];
             input[0] = input[1];
             input[1] = input[2];
@@ -461,51 +520,87 @@ public class Main {
 
         String[] subWord(String input[]){
             for(int i = 0; i < 4; i++){
-                input[i] = sbox(input[i]);
+                input[i] = "00".substring(sbox(input[i]).length()) + sbox(input[i]);
             }
 
             return input;
         }
 
         String[] rCon(String input[], int round) {
-            int rcon[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36}; //10 rounds
+            String rnd[] = { "01", "02", "04", "08", "10", "20", "40", "80", "1b", "36" }; //10 rounds, hex
+            String rcon[] = { rnd[round], "00", "00", "00" };
 
-            return input;
+            return xor(input, rcon);
         }
 
 
-        String keySchedule(String key){
+        String[][] keySchedule(String key){
             int len = key.length() / 2; //byte length
-            String keySchedule[];
+
             String block[][] = stringToBlock(key.toLowerCase());
+
             int round, rcon;
-            String input[];
-            if(len == 32) {
+
+            String temp[] = new String[4];
+            if(len == 32) { //256
                 round = 14;
                 rcon = 7;
             }
-            else if(len == 24) {
+            else if(len == 24) { //192
                 round = 12;
                 rcon = 8;
             }
-            else { //len = 16
+            else { //128
                 round = 10;
                 rcon = 10;
             }
+            String input[] = new String[4];
+            String keySchedule[][] = new String[round * 4 + 4][]; //length 44 for 128bit, 52 for 192bit, 60 for 256bit
+            for(int yy = 0; yy < 4; yy++){ //fix for 192, 256
+                keySchedule[yy] = block[yy];
+                //System.out.println(block[y][3]); sets first 4 in keySchedule to first four words
+            }
 
-            for(int i = 0; i < 1; i++){
+            for(int i = 0; i < round; i++){
+
+                for(int s = 0; s < 4; s++){ //assign array w/o using reference space
+                    input[s] = keySchedule[i * 4 + 3][s];
+                }
+
                 if(i < rcon) {
-                    input = rCon(subWord(rotWord(block[3])), i);
-                }
-                else{
-                    input = subWord(rotWord(block[3]));
+                    input = rotWord(input);
+                    input = subWord(input);
+                    input = rCon(input, i);
                 }
 
+                else{
+                    input = subWord(rotWord(keySchedule[i * 4 + 3]));
+                }
+
+                keySchedule[i * 4 + 4] = xor(keySchedule[i * 4 + 0], input);
+                keySchedule[i * 4 + 5] = xor(keySchedule[i * 4 + 1], keySchedule[i * 4 + 4]);
+                keySchedule[i * 4 + 6] = xor(keySchedule[i * 4 + 2], keySchedule[i * 4 + 5]);
+                keySchedule[i * 4 + 7] = xor(keySchedule[i * 4 + 3], keySchedule[i * 4 + 6]); //input to next round rotword
             }
 
 
-
-            return "";
+            if(printOpAES) {
+                System.out.println("Key Schedule (4 bytes per word, 4 words per key)");
+                int keyCounter = 0;
+                for (int y = 0; y < round * 4 + 4; y++) {
+                    if (y % 4 == 0) {
+                        System.out.print("Key " + (keyCounter + 1) + ": ");
+                    }
+                    for (int x = 0; x < 4; x++) {
+                        System.out.print(keySchedule[y][x] + " ");
+                    }
+                    if ((y + 1) % 4 == 0) {
+                        System.out.println();
+                        keyCounter++;
+                    }
+                }
+            }
+            return keySchedule;
         }
 
         String addRoundKey(){
@@ -529,9 +624,9 @@ public class Main {
         }
 
         String encrypt(String text, String key){
+            String keySchedule[][] = keySchedule(key);
 
 
-            keySchedule(key);
             return "";
         }
 
@@ -657,21 +752,20 @@ public class Main {
                 }
             }
             if(enc == 2){ //AES...
+
                 AES aes = new AES();
                 String text = "4D41444953454E534B494E4E45523036";
-                String key = "5445584153564F4C4C455942414C4C31";
+                String key = "0000000000000000000000000000000000000000000000000000000000000000";////5445584153564F4C4C455942414C4C31
+                System.out.println();
                 System.out.println(aes.encrypt(text, key));
 
-                aes.blockToString(aes.stringToBlock(key));
 
 
-                System.out.println("AES");
-                System.out.println("In progress...");
             }
         }
-        catch(StringIndexOutOfBoundsException exception) {
-            System.out.println("Operation failed: Ensure all input is in 64-bit hexadecimal (Allowed: [0123456789abcdef])");
-        }
+        //catch(StringIndexOutOfBoundsException exception) {
+        //    System.out.println("Operation failed: Ensure all input is in 64-bit hexadecimal (Allowed: [0123456789abcdef])");
+        //}
         catch(InputMismatchException exception){
             System.out.println("Operation failed: Invalid input.");
         }
