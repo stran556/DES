@@ -479,18 +479,20 @@ public class Main {
             return text;
         }
 
+
+
         String sbox(String input){
             int num = sbox[Integer.parseInt(input.substring(0, 1), 16)][Integer.parseInt(input.substring(1), 16)];
 
             return Integer.toHexString(num);
         }
 
-        String[] xor(String[] input1, String[] input2) { //xor for 1 word (4 bytes) at a time
+        String[] xor(String[] input1, String[] input2) { //xor for two arrays
             int len = input1.length;
             String xor[] = new String[len];
             String builder = "";
-            for(int i = 0; i < len; i++){
-                for(int ii = 0; ii < 8; ii++){
+            for(int i = 0; i < len; i++){ //each of 16 indexes
+                for(int ii = 0; ii < 8; ii++){ //each of 8 bits per index (1 byte)
                     if(hexToBinary(input1[i]).charAt(ii) == hexToBinary(input2[i]).charAt(ii)){
                         builder = builder + "0";
                     }
@@ -534,7 +536,7 @@ public class Main {
         }
 
 
-        String[][] keySchedule(String key){
+        String[] keySchedule(String key){
             int len = key.length() / 2; //byte length
 
             String block[][] = stringToBlock(key.toLowerCase());
@@ -556,6 +558,7 @@ public class Main {
             }
             String input[] = new String[4];
             String keySchedule[][] = new String[round * 4 + 4][]; //length 44 for 128bit, 52 for 192bit, 60 for 256bit
+            String ks[] = new String[(round + 1) * 16];
             for(int yy = 0; yy < 4; yy++){ //fix for 192, 256
                 keySchedule[yy] = block[yy];
                 //System.out.println(block[y][3]); sets first 4 in keySchedule to first four words
@@ -584,23 +587,30 @@ public class Main {
             }
 
 
-            if(printOpAES) {
+
                 System.out.println("Key Schedule (4 bytes per word, 4 words per key)");
                 int keyCounter = 0;
+                int counter = 0;
                 for (int y = 0; y < round * 4 + 4; y++) {
                     if (y % 4 == 0) {
                         System.out.print("Key " + (keyCounter + 1) + ": ");
                     }
                     for (int x = 0; x < 4; x++) {
                         System.out.print(keySchedule[y][x] + " ");
+                        ks[counter] = keySchedule[y][x];
+                        counter++;
                     }
                     if ((y + 1) % 4 == 0) {
                         System.out.println();
                         keyCounter++;
                     }
                 }
-            }
-            return keySchedule;
+
+                for(int p = 0; p < ks.length; p++){
+                    //System.out.print(ks[p] + " ");
+                }
+
+            return ks;
         }
 
         String addRoundKey(){
@@ -620,13 +630,63 @@ public class Main {
         }
 
         String round(){
+
+            /*
+            subBytes
+            shiftRows
+            mixColumns
+            addRoundKey (9, 11, 13 rounds)
+             */
+
+
+
+
+
             return "";
         }
 
         String encrypt(String text, String key){
-            String keySchedule[][] = keySchedule(key);
+            String keySchedule[] = keySchedule(key);
+            String keyBlock[] = new String[16];
+            String textArray[] = new String[text.length() / 2];
+            String xor[] = new String[16];
+
+            System.out.print("\nText: ");
+            for(int x = 0; x < text.length(); x = x + 2){
+                textArray[x / 2] = text.substring(0 + x, 2 + x);
+                System.out.print(textArray[x / 2] + " ");
+            }
+
+            System.out.println();
+            for(int i = 0; i < keySchedule.length / 16; i++) {
+                for (int ii = 0; ii < 16; ii++) {
+                    keyBlock[ii] = keySchedule[ii + (16 * i)];
+                }
+                if(printOpAES) {
+                    System.out.println("");
+                    for (int h = 0; h < 16; h++) {
+                        System.out.print(keyBlock[h] + "");
+                    }
+                    System.out.print("| roundkey" + (i + 1));
+                }
+
+                xor = (xor(textArray, keyBlock)); //addroundkey to text
+
+            }
 
 
+
+            //xor(stringToBlock(text), );
+
+
+
+            //addRoundKey (initial round)
+
+            //round()
+
+            //subBytes
+            //        shiftRows
+            //addRoundKey (final round)
             return "";
         }
 
@@ -752,12 +812,16 @@ public class Main {
                 }
             }
             if(enc == 2){ //AES...
-
+                System.out.println("|______________");
                 AES aes = new AES();
                 String text = "4D41444953454E534B494E4E45523036";
-                String key = "0000000000000000000000000000000000000000000000000000000000000000";////5445584153564F4C4C455942414C4C31
+                String key = "00000000000000000000000000000000";////5445584153564F4C4C455942414C4C31
                 System.out.println();
                 System.out.println(aes.encrypt(text, key));
+
+                //String aa[] = {"4d", "41,", "44", "49", "53"};
+                //String ab[] = {"4d", "41,", "44", "49", "22"};
+                //System.out.println(aes.xor(aa,ab));
 
 
 
