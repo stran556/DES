@@ -655,25 +655,74 @@ public class Main {
             return block;
         }
 
-        String mixColumns(){
+        String mixColumns(String block[][]){
+            int mixer[][] = { { 2, 3, 1, 1 },
+                              { 1, 2, 3, 1 },
+                              { 1, 1, 2, 3 },
+                              { 3, 1, 1, 2 } };
+            int blockInt[][] = new int[4][4];
+            String matrix[] = new String[16];
+
+            for(int i = 0; i < 4; i++){ //column-major print
+                for(int ii = 0; ii < 4; ii++){
+                    //System.out.print(block[ii][i] + " ");
+                    blockInt[ii][i] = Integer.parseInt(block[ii][i], 16);
+                }
+                System.out.println();
+            }
+
+
+
+            System.out.println();
+            for(int i = 0; i < 4; i++){ //column-major print
+                for(int ii = 0; ii < 4; ii++){
+                    System.out.print(blockInt[ii][i] + " ");
+                }
+                System.out.println();
+            }
+            System.out.println();
+
+            int counter = 0;
+            int num = 0;
+            for(int i = 0; i < 4; i++){ //column-major print
+                for(int ii = 0; ii < 4; ii++){
+                    //System.out.print(block[ii][i] + " ");
+                    for(int x = 0; x < 4; x++) {
+                        num = num + (mixer[ii][x] * blockInt[i][x]);
+                        //System.out.print(mixer[ii][x] + " * " + blockInt[i][x]);
+                    }
+                    matrix[counter] = String.valueOf(num);
+                    num = 0;
+                    counter++;
+                }
+            }
+
+            for(int r = 0; r < 16; r++){
+                System.out.print(matrix[r] + " ");
+                if((r + 1) % 4 == 0 && r != 0){
+                    System.out.println();
+                }
+            }
             return "";
         }
 
         String[] round(String keyBlock[], String roundKey[]){
 
             String addRoundKey[] = new String[keyBlock.length];
-
             String builder = "";
-            addRoundKey = subBytes(roundKey); //subBytes
 
+            //subBytes
+            addRoundKey = subBytes(roundKey);
 
+            //shiftRows
             for(int i = 0; i < 16; i++){ //array to string
                 builder = builder + addRoundKey[i];
             }
             String block[][] = stringToBlock(builder);
             block = shiftRows(block);
 
-
+            mixColumns(block);
+            //mixColumns
 
             /*
             n = subBytes(roundKey)
@@ -686,9 +735,6 @@ public class Main {
             for(int j = 0; j < 16; j++){
                 System.out.print(keyBlock[j]);
             }
-
-
-
 
             return addRoundKey;
         }
