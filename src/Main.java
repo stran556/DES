@@ -3,6 +3,7 @@ package company;
 
 import java.util.HashMap;
 import java.util.InputMismatchException;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
@@ -460,11 +461,11 @@ public class Main {
                 }
             }
 
-            for(int i = 0; i < 4; i++){
+            for(int i = 0; i < 4; i++){ //column-major print
                 for(int ii = 0; ii < 4; ii++){
-                    System.out.print(block[ii][i] + " ");
+                    //System.out.print(block[i][ii] + " ");
                 }
-                System.out.println();
+                //System.out.println();
             }
             return block;
         }
@@ -613,80 +614,108 @@ public class Main {
             return ks;
         }
 
-        String addRoundKey(){
-            return "";
+        String[] subBytes(String roundKey[]){
+            for(int i = 0; i < roundKey.length; i++){
+                roundKey[i] = "00".substring(sbox(roundKey[i]).length()) + sbox(roundKey[i]);
+            }
+
+            return roundKey;
         }
 
-        String subBytes(){
-            return "";
-        }
-
-        String shiftRows(){
-            return "";
+        String[][] shiftRows(String block[][]){
+            return block;
         }
 
         String mixColumns(){
             return "";
         }
 
-        String round(){
+        String[] round(String keyBlock[], String roundKey[]){
+
+            String addRoundKey[] = new String[keyBlock.length];
+
+            String builder = "";
+            addRoundKey = subBytes(roundKey); //subBytes
+            for(int i = 0; i < 16; i++){ //array to string
+                builder = builder + addRoundKey[i];
+            }
+            String block[][] = stringToBlock(builder);
+
+
+            for(int i = 0; i < 4; i++){ //column-major print
+                for(int ii = 0; ii < 4; ii++){
+                    System.out.print(block[i][ii] + " ");
+                }
+                System.out.println();
+            }
+
+            block = shiftRows(block);
 
             /*
-            subBytes
-            shiftRows
-            mixColumns
-            addRoundKey (9, 11, 13 rounds)
+            n = subBytes(roundKey)
+            n = shiftRows(n)
+            mixColumns(n)
+            addRoundKey = xor(n, keyBlock)
              */
+            System.out.println();
+            for(int j = 0; j < 16; j++){
+                //System.out.print(addRoundKey[j]);
+            }
 
 
 
 
-
-            return "";
+            return addRoundKey;
         }
 
         String encrypt(String text, String key){
             String keySchedule[] = keySchedule(key);
-            String keyBlock[] = new String[16];
-            String textArray[] = new String[text.length() / 2];
-            String xor[] = new String[16];
+            String keyBlock[] = new String[16]; //round key array (16 bytes)
+            String textArray[] = new String[text.length() / 2]; //text to array
+            String addRoundKey[] = new String[16];
 
             System.out.print("\nText: ");
             for(int x = 0; x < text.length(); x = x + 2){
                 textArray[x / 2] = text.substring(0 + x, 2 + x);
                 System.out.print(textArray[x / 2] + " ");
             }
-
+            //ROUND KEY INITIAL
             System.out.println();
-            for(int i = 0; i < keySchedule.length / 16; i++) {
-                for (int ii = 0; ii < 16; ii++) {
-                    keyBlock[ii] = keySchedule[ii + (16 * i)];
+            for (int ii = 0; ii < 16; ii++) {
+                keyBlock[ii] = keySchedule[ii];
+            }
+            if(printOpAES) {
+                System.out.println("");
+                for (int h = 0; h < 16; h++) {
+                    System.out.print(keyBlock[h] + "");
                 }
-                if(printOpAES) {
-                    System.out.println("");
-                    for (int h = 0; h < 16; h++) {
-                        System.out.print(keyBlock[h] + "");
-                    }
-                    System.out.print("| roundkey" + (i + 1));
-                }
+                System.out.print(" | roundkey");
+            }
+            addRoundKey = (xor(textArray, keyBlock)); //addRoundKey
+            System.out.println();
 
-                xor = (xor(textArray, keyBlock)); //addroundkey to text
-
+            for(int t = 0; t < 16; t++){
+                //System.out.print(addRoundKey[t] + "");
             }
 
+            //ROUND KEY i
+            for(int i = 1; i < keySchedule.length / 16 - 1; i++) { //9, 11, or 13 rounds
+                System.out.println();
+                for (int ii = 0; ii < 16; ii++) { //calculate next key value
+                    keyBlock[ii] = keySchedule[ii + (16 * i)];
+                    //System.out.print(keyBlock[ii]);
+                }
+                addRoundKey = round(keyBlock, addRoundKey); //result of mixcolumn xor keyBlock, goes back into next round as addRoundkey
+                for(int t = 0; t < 16; t++){
+                    //System.out.print(addRoundKey[t] + "");
+                }
+            }
+
+            //ROUND KEY FINAL
 
 
-            //xor(stringToBlock(text), );
 
 
-
-            //addRoundKey (initial round)
-
-            //round()
-
-            //subBytes
-            //        shiftRows
-            //addRoundKey (final round)
             return "";
         }
 
@@ -818,10 +847,16 @@ public class Main {
                 String key = "00000000000000000000000000000000";////5445584153564F4C4C455942414C4C31
                 System.out.println();
                 System.out.println(aes.encrypt(text, key));
-
                 //String aa[] = {"4d", "41,", "44", "49", "53"};
                 //String ab[] = {"4d", "41,", "44", "49", "22"};
-                //System.out.println(aes.xor(aa,ab));
+
+                String block[][] = aes.stringToBlock(text.toLowerCase());
+                for(int i = 0; i < 4; i++){ //column-major print
+                    for(int ii = 0; ii < 4; ii++){
+                        System.out.print(block[i][ii] + " ");
+                    }
+                    System.out.println();
+                }
 
 
 
