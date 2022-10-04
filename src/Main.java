@@ -999,22 +999,9 @@ public class Main {
                 System.out.println("|______________");
                 AES aes = new AES();
                 String text = "4D41444953454E534B494E4E45523036";
-                String key = "11223344556677880102030405060708";////5445584153564F4C4C455942414C4C31
+                String key = "5445584153564F4C4C455942414C4C31";
                 System.out.println();
                 System.out.println(aes.encrypt(text, key));
-                //String aa[] = {"4d", "41,", "44", "49", "53"};
-                //String ab[] = {"4d", "41,", "44", "49", "22"};
-                /*
-                String block[][] = aes.stringToBlock(text.toLowerCase());
-                for(int i = 0; i < 4; i++){ //column-major print
-                    for(int ii = 0; ii < 4; ii++){
-                        System.out.print(block[i][ii] + " ");
-                    }
-                    System.out.println();
-                }
-                */
-
-
 
 
 
