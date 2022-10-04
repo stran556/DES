@@ -1,4 +1,5 @@
 //Data Encryption Standard
+package company;
 
 import java.util.HashMap;
 import java.util.InputMismatchException;
@@ -557,13 +558,15 @@ public class Main {
                 rcon = 10;
             }
             String input[] = new String[4];
-            String keySchedule[][] = new String[round * 4 + 4][]; //length 44 for 128bit, 52 for 192bit, 60 for 256bit
+            String keySchedule[][] = new String[round * 4 + 4][4]; //length 44 for 128bit, 52 for 192bit, 60 for 256bit
             String ks[] = new String[(round + 1) * 16];
-            for(int yy = 0; yy < 4; yy++){ //fix for 192, 256
-                keySchedule[yy] = block[yy];
-                //System.out.println(block[y][3]); sets first 4 in keySchedule to first four words
-            }
 
+            for(int i = 0; i < 4; i++){ //Move column-major block into row-major block
+                for(int ii = 0; ii < 4; ii++){
+                    keySchedule[i][ii] = block[ii][i];
+                    //System.out.println(keySchedule[i][ii]);
+                }
+            }
             for(int i = 0; i < round; i++){
 
                 for(int s = 0; s < 4; s++){ //assign array w/o using reference space
@@ -587,24 +590,22 @@ public class Main {
             }
 
 
-            String awesome = blockToString(keySchedule);
-            System.out.println(awesome);
             //fix the key issue...
 
-            System.out.println("Key Schedule (4 bytes per word, 4 words per key)");
+            //System.out.println("Key Schedule (4 bytes per word, 4 words per key)");
             int keyCounter = 0;
             int counter = 0;
             for (int y = 0; y < round * 4 + 4; y++) {
                 if (y % 4 == 0) {
-                    System.out.print("Key " + (keyCounter + 1) + ": ");
+                    //System.out.print("Key " + (keyCounter + 1) + ": ");
                 }
                 for (int x = 0; x < 4; x++) {
-                    System.out.print(keySchedule[y][x] + " ");
+                    //System.out.print(keySchedule[y][x] + " ");
                     ks[counter] = keySchedule[y][x];
                     counter++;
                 }
                 if ((y + 1) % 4 == 0) {
-                    System.out.println();
+                    //System.out.println();
                     keyCounter++;
                 }
             }
@@ -651,7 +652,7 @@ public class Main {
                 for(int ii = 0; ii < 4; ii++){
                     //System.out.print(block[i][ii] + " ");
                 }
-                System.out.println();
+                //System.out.println();
             }
             return block;
         }
@@ -669,9 +670,8 @@ public class Main {
                     //System.out.print(block[ii][i] + " ");
                     blockInt[ii][i] = Integer.parseInt(block[i][ii], 16);
                 }
-                System.out.println();
             }
-
+            /*
             System.out.println();
             for(int i = 0; i < 4; i++){ //column-major print
                 for(int ii = 0; ii < 4; ii++){
@@ -680,6 +680,8 @@ public class Main {
                 System.out.println();
             }
             System.out.println();
+            */
+
 
             int counter = 0;
             String temp = "000000000000"; //initial xor yields same value
@@ -700,9 +702,9 @@ public class Main {
             }
 
             for (int r = 0; r < 16; r++) {
-                System.out.print(matrix[r].toLowerCase() + " ");
+                //System.out.print(matrix[r].toLowerCase() + " ");
                 if ((r + 1) % 4 == 0 && r != 0) {
-                    System.out.println();
+                    //System.out.println();
                 }
             }
 
@@ -780,9 +782,9 @@ public class Main {
             mix = mixColumns(block);
             addRoundKey = xorArray(mix, keyBlock);
 
-            System.out.print("\nKey: ");
+            //System.out.print("\nKey: ");
             for(int j = 0; j < 16; j++){
-                System.out.print(keyBlock[j]);
+                //System.out.print(keyBlock[j]);
             }
 
             return addRoundKey;
@@ -794,26 +796,26 @@ public class Main {
             String textArray[] = new String[text.length() / 2]; //text to array
             String addRoundKey[] = new String[16];
 
-            System.out.print("\nText: ");
+            System.out.print("\nTEXT: ");
             for(int x = 0; x < text.length(); x = x + 2){
                 textArray[x / 2] = text.substring(0 + x, 2 + x);
-                System.out.print(textArray[x / 2] + " ");
+                System.out.print(textArray[x / 2].toLowerCase() + "");
             }
 
             //ROUND KEY INITIAL
-            System.out.println();
+            //System.out.println();
             for (int ii = 0; ii < 16; ii++) {
                 keyBlock[ii] = keySchedule[ii];
             }
             if(printOpAES) {
                 System.out.println("");
                 for (int h = 0; h < 16; h++) {
-                    System.out.print(keyBlock[h] + "");
+                    //System.out.print(keyBlock[h] + "");
                 }
-                System.out.print(" | roundkey");
+                //System.out.print(" | roundkey");
             }
             addRoundKey = (xorArray(textArray, keyBlock)); //addRoundKey
-            System.out.println();
+            //System.out.println();
 
             for(int t = 0; t < 16; t++){
                 //System.out.print(addRoundKey[t] + "");
@@ -821,18 +823,18 @@ public class Main {
 
             //ROUND KEY i
             for(int i = 1; i < keySchedule.length / 16 - 1; i++) { //9, 11, or 13 rounds
-                System.out.println();
+                //System.out.println();
                 for (int ii = 0; ii < 16; ii++) { //calculate next key value
                     keyBlock[ii] = keySchedule[ii + (16 * i)];
                     //System.out.print(keyBlock[ii]);
                 }
 
                 addRoundKey = round(keyBlock, addRoundKey); //result of mixcolumn xor keyBlock, goes back into next round as addRoundkey
-                System.out.println("\nNext round input:");
+                //System.out.println("\nNext round input:");
                 for(int t = 0; t < 16; t++){
-                    System.out.print(addRoundKey[t] + "");
+                    //System.out.print(addRoundKey[t] + "");
                 }
-                System.out.println();
+                //System.out.println();
             }
 
 
@@ -997,7 +999,7 @@ public class Main {
                 System.out.println("|______________");
                 AES aes = new AES();
                 String text = "4D41444953454E534B494E4E45523036";
-                String key = "ffffffffffffffffffffffffffffffff";////5445584153564F4C4C455942414C4C31
+                String key = "11223344556677880102030405060708";////5445584153564F4C4C455942414C4C31
                 System.out.println();
                 System.out.println(aes.encrypt(text, key));
                 //String aa[] = {"4d", "41,", "44", "49", "53"};
