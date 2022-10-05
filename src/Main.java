@@ -1,9 +1,7 @@
 //Data Encryption Standard
-package company;
 
 import java.util.HashMap;
 import java.util.InputMismatchException;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
@@ -14,7 +12,6 @@ public class Main {
 
 
     private static class DES {
-
         //initial permutation
         int IP[] = { 58, 50, 42, 34, 26, 18, 10, 2,
                 60, 52, 44, 36, 28, 20, 12, 4,
@@ -388,6 +385,9 @@ public class Main {
     }
 
     private static class AES {
+
+        String roundPrint[] = new String[80];
+
         // 0     1     2     3     4     5     6     7     8     9     a     b     c     d     e     f
         int sbox[][] = { { 0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76 },
                 { 0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0 },
@@ -466,6 +466,18 @@ public class Main {
                     //System.out.print(block[i][ii] + " ");
                 }
                 //System.out.println();
+            }
+            return block;
+        }
+
+        String[][] arrayToBlock(String input[]){
+            String block[][] = new String[4][4];
+            int counter = 0;
+            for(int i = 0; i < 4; i++){
+                for(int ii = 0; ii < 4; ii++){
+                    block[ii][i] = input[counter];
+                    counter = counter + 1;
+                }
             }
             return block;
         }
@@ -597,15 +609,15 @@ public class Main {
             int counter = 0;
             for (int y = 0; y < round * 4 + 4; y++) {
                 if (y % 4 == 0) {
-                    //System.out.print("Key " + (keyCounter + 1) + ": ");
+                    System.out.print("Key " + (keyCounter + 1) + ": ");
                 }
                 for (int x = 0; x < 4; x++) {
-                    //System.out.print(keySchedule[y][x] + " ");
+                    System.out.print(keySchedule[y][x] + " ");
                     ks[counter] = keySchedule[y][x];
                     counter++;
                 }
                 if ((y + 1) % 4 == 0) {
-                    //System.out.println();
+                    System.out.println();
                     keyCounter++;
                 }
             }
@@ -659,9 +671,9 @@ public class Main {
 
         String[] mixColumns(String block[][]){
             int mixer[][] = { { 2, 3, 1, 1 },
-                              { 1, 2, 3, 1 },
-                              { 1, 1, 2, 3 },
-                              { 3, 1, 1, 2 } };
+                    { 1, 2, 3, 1 },
+                    { 1, 1, 2, 3 },
+                    { 3, 1, 1, 2 } };
             int blockInt[][] = new int[4][4]; //Convert old state byte strings to integers
             String matrix[] = new String[16]; //Final output "matrix" for mixColumns
 
@@ -769,8 +781,30 @@ public class Main {
             String addRoundKey[] = new String[keyBlock.length];
             String builder = "";
             String mix[];
+
+            String blockOut[][] = arrayToBlock(roundKey);
+
+            int multiplier = 0;
+            for(int i = 0; i < 4; i++){
+                for(int ii = 0; ii < 4; ii++){
+                    System.out.print(blockOut[i][ii]);
+                    roundPrint[ii + (multiplier * 20)] = blockOut[i][ii];
+                }
+                multiplier++;
+                System.out.println();
+            }
+
             //subBytes
+            multiplier = 0;
             addRoundKey = subBytes(roundKey);
+            for(int i = 0; i < 4; i++){
+                for(int ii = 4; ii < 8; ii++){
+                    System.out.print(arrayToBlock(addRoundKey)[i][ii % 4]);
+                    roundPrint[ii + (multiplier * 20)] = arrayToBlock(addRoundKey)[i][ii % 4];
+                }
+                multiplier++;
+                System.out.println();
+            }
 
             //shiftRows
             for(int i = 0; i < 16; i++){ //array to string
@@ -779,8 +813,38 @@ public class Main {
             String block[][] = stringToBlock(builder);
             block = shiftRows(block);
 
+            multiplier = 0;
+            for(int i = 0; i < 4; i++){
+                for(int ii = 8; ii < 12; ii++){
+                    System.out.print(block[i][ii % 4]);
+                    roundPrint[ii + (multiplier * 20)] = block[i][ii % 4];
+                }
+                multiplier++;
+                System.out.println();
+            }
+
+            //mixcolumns
             mix = mixColumns(block);
+            multiplier = 0;
+            for(int i = 0; i < 4; i++){
+                for(int ii = 12; ii < 16; ii++){
+                    System.out.print(arrayToBlock(mix)[i][ii % 4]);
+                    roundPrint[ii + (multiplier * 20)] = arrayToBlock(mix)[i][ii % 4];
+                }
+                multiplier++;
+                System.out.println();
+            }
+
             addRoundKey = xorArray(mix, keyBlock);
+            multiplier = 0;
+            for(int i = 0; i < 4; i++){
+                for(int ii = 16; ii < 20; ii++){
+                    System.out.print(arrayToBlock(addRoundKey)[i][ii % 4]);
+                    roundPrint[ii + (multiplier * 20)] = arrayToBlock(addRoundKey)[i][ii % 4];
+                }
+                multiplier++;
+                System.out.println();
+            }
 
             //System.out.print("\nKey: ");
             for(int j = 0; j < 16; j++){
@@ -803,19 +867,23 @@ public class Main {
             }
 
             //ROUND KEY INITIAL
-            //System.out.println();
+            System.out.println("\nINITIAL ROUND: ");
             for (int ii = 0; ii < 16; ii++) {
                 keyBlock[ii] = keySchedule[ii];
+                System.out.print(keyBlock[ii] + " ");
             }
+
+            System.out.println("\nROUND KEY INITIAL:");
+            String blockOut[][] = arrayToBlock(keyBlock);
+
             if(printOpAES) {
-                System.out.println("");
                 for (int h = 0; h < 16; h++) {
                     //System.out.print(keyBlock[h] + "");
                 }
                 //System.out.print(" | roundkey");
             }
             addRoundKey = (xorArray(textArray, keyBlock)); //addRoundKey
-            //System.out.println();
+            System.out.println();
 
             for(int t = 0; t < 16; t++){
                 //System.out.print(addRoundKey[t] + "");
@@ -823,10 +891,20 @@ public class Main {
 
             //ROUND KEY i
             for(int i = 1; i < keySchedule.length / 16 - 1; i++) { //9, 11, or 13 rounds
+                System.out.println("ROUND " + i + ": ");
                 //System.out.println();
                 for (int ii = 0; ii < 16; ii++) { //calculate next key value
                     keyBlock[ii] = keySchedule[ii + (16 * i)];
                     //System.out.print(keyBlock[ii]);
+                }
+
+                System.out.println("\nKEY TO BLOCK " + i + ":");
+                blockOut = arrayToBlock(keyBlock);
+                for(int iii = 0; iii < 4; iii++){
+                    for(int ii = 0; ii < 4; ii++){
+                        System.out.print(blockOut[iii][ii]);
+                    }
+                    System.out.println();
                 }
 
                 addRoundKey = round(keyBlock, addRoundKey); //result of mixcolumn xor keyBlock, goes back into next round as addRoundkey
@@ -835,10 +913,20 @@ public class Main {
                     //System.out.print(addRoundKey[t] + "");
                 }
                 //System.out.println();
+
+                System.out.println();
+                for(int a = 0; a < roundPrint.length; a++){
+                    System.out.print(roundPrint[a] + " ");
+                    if((a + 1) % 20 == 0 && a != 0){
+                        System.out.println();
+                    }
+                }
+
             }
 
 
             //ROUND KEY FINAL
+            System.out.println("FINAL ROUND(10): ");
             String builder = "";
             String builder2[] = new String[16];
             int counter = 0;
@@ -865,12 +953,13 @@ public class Main {
 
             addRoundKey = xorArray(builder2, keyBlock);
             String finalBuilder = "";
+
+
+
             System.out.print("\nFINAL: ");
             for(int i = 0; i < 16; i++){
                 finalBuilder = finalBuilder + addRoundKey[i];
             }
-
-
             return finalBuilder;
         }
 
