@@ -1,5 +1,5 @@
 //Data Encryption Standard
-
+package company;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -7,11 +7,9 @@ import java.util.Scanner;
 public class Main {
 
     //Toggle print operations
-    private static boolean printOpDES = false;
-    private static boolean printOpAES = true;
-
 
     private static class DES {
+        boolean printOpDES = false;
         //initial permutation
         int IP[] = { 58, 50, 42, 34, 26, 18, 10, 2,
                 60, 52, 44, 36, 28, 20, 12, 4,
@@ -386,6 +384,7 @@ public class Main {
 
     private static class AES {
 
+        boolean printOpAES = true;
         String roundPrint[] = new String[80];
 
         // 0     1     2     3     4     5     6     7     8     9     a     b     c     d     e     f
@@ -686,16 +685,6 @@ public class Main {
                     blockInt[ii][i] = Integer.parseInt(block[i][ii], 16);
                 }
             }
-            /*
-            System.out.println();
-            for(int i = 0; i < 4; i++){ //column-major print
-                for(int ii = 0; ii < 4; ii++){
-                    System.out.print(blockInt[ii][i] + " ");
-                }
-                System.out.println();
-            }
-            System.out.println();
-            */
 
 
             int counter = 0;
