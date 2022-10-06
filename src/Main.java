@@ -1,5 +1,5 @@
 //Data Encryption Standard
-package company;
+
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -9,7 +9,7 @@ public class Main {
     //Toggle print operations
 
     private static class DES {
-        boolean printOpDES = false;
+        boolean printOpDES = true;
         //initial permutation
         int IP[] = { 58, 50, 42, 34, 26, 18, 10, 2,
                 60, 52, 44, 36, 28, 20, 12, 4,
@@ -290,7 +290,6 @@ public class Main {
             for(int i = 0; i < 16; i++){
                 key = shifter(key.substring(0, key.length()/2), shift[i]) + shifter(key.substring(key.length()/2, key.length()), shift[i]);
                 keySchedule[i] = transpose(key, PC2);
-                //System.out.println("Round " + (i + 1) + ": " + keySchedule[i]);
             }
             return keySchedule;
         }
@@ -847,16 +846,17 @@ public class Main {
         }
 
         String encrypt(String text, String key){
+
             String keySchedule[] = keySchedule(key);
             String keyBlock[] = new String[16]; //round key array (16 bytes)
             String textArray[] = new String[text.length() / 2]; //text to array
-            String addRoundKey[] = new String[16];
+            String addRoundKey[];
             String roundPrintInitial[] = new String[32];
-
 
             for(int x = 0; x < text.length(); x = x + 2){
                 textArray[x / 2] = text.substring(0 + x, 2 + x).toLowerCase();
             }
+
             if(printOpAES) {
                 System.out.print("\nTEXT: ");
                 System.out.print(text.toLowerCase());
@@ -1045,8 +1045,6 @@ public class Main {
                 }
                 System.out.println();
             }
-            if(printOpAES)
-                System.out.print("\nFINAL: ");
             for(int i = 0; i < 16; i++){
                 finalBuilder = finalBuilder + addRoundKey[i];
             }
@@ -1054,6 +1052,9 @@ public class Main {
         }
 
         String decrypt(String text, String key){
+            text = "00000000000000000000000000000000".substring(text.length()) + text;
+            key = "00000000000000000000000000000000".substring(key.length()) + key;
+
             return "coming soon...";
         }
 
