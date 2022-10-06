@@ -8,7 +8,7 @@ public class Main {
 
     //Toggle print operations
     private static boolean printOpDES = false;
-    private static boolean printOpAES = false;
+    private static boolean printOpAES = true;
 
 
     private static class DES {
@@ -868,12 +868,12 @@ public class Main {
             for(int x = 0; x < text.length(); x = x + 2){
                 textArray[x / 2] = text.substring(0 + x, 2 + x).toLowerCase();
             }
-
-            System.out.print("\nTEXT: ");
-            System.out.print(text.toLowerCase());
-            System.out.print("\nKEY: ");
-            System.out.println(key.toLowerCase());
-
+            if(printOpAES) {
+                System.out.print("\nTEXT: ");
+                System.out.print(text.toLowerCase());
+                System.out.print("\nKEY: ");
+                System.out.println(key.toLowerCase());
+            }
             int multiplier = 0;
             for(int t = 0; t < 4; t++){
                 for(int tt = 0; tt < 4; tt++) {
@@ -1056,16 +1056,16 @@ public class Main {
                 }
                 System.out.println();
             }
-
-            System.out.print("\nFINAL: ");
+            if(printOpAES)
+                System.out.print("\nFINAL: ");
             for(int i = 0; i < 16; i++){
                 finalBuilder = finalBuilder + addRoundKey[i];
             }
             return finalBuilder;
         }
 
-        String decrypt(){
-            return "";
+        String decrypt(String text, String key){
+            return "coming soon...";
         }
 
 
@@ -1186,12 +1186,56 @@ public class Main {
                 }
             }
             if(enc == 2){ //AES...
-                System.out.println("|______________");
                 AES aes = new AES();
-                String text = "4D41444953454E534B494E4E45523036";
-                String key = "5445584153564F4C4C455942414C4C31";
-                System.out.println();
-                System.out.println(aes.encrypt(text, key));
+                System.out.println("|------[AES]");
+                System.out.println("|        [1]FILE \n|        [2]MANUAL ");
+                Scanner sc = new Scanner(System.in);
+                System.out.print("|         ");
+                int typeInput = sc.nextInt();
+                if(typeInput == 1) {
+                    String text = "4D41444953454E534B494E4E45523036";
+                    String key = "5445584153564F4C4C455942414C4C31";
+                    System.out.println();
+                    System.out.println(aes.encrypt(text, key));
+                }
+                if(typeInput == 2){
+                    System.out.println("|----------[MANUAL]");
+                    System.out.println("|            [1]ENCRYPT \n|            [2]DECRYPT ");
+                    System.out.print("|             ");
+                    Scanner c = new Scanner(System.in);
+                    int manualInput = c.nextInt();
+                    if(manualInput == 1){
+                        System.out.println("|--------------[ENCRYPT]");
+                        System.out.println();
+                        System.out.println("128BIT[________________________________]");
+                        System.out.print("[TXT]  ");
+                        Scanner sc2 = new Scanner(System.in);
+                        String input2 = sc2.nextLine();
+                        System.out.print("[KEY]  ");
+                        String input3 = sc2.nextLine();
+                        System.out.println("[OUT]  " + aes.encrypt(input2, input3));
+
+
+                    }
+                    if(manualInput == 2){
+                        System.out.println("|--------------[DECRYPT]");
+                        System.out.println();
+                        System.out.println("128BIT[________________________________]");
+                        System.out.print("[TXT]  ");
+                        Scanner sc2 = new Scanner(System.in);
+                        String input2 = sc2.nextLine();
+                        System.out.print("[KEY]  ");
+                        String input3 = sc2.nextLine();
+                        System.out.println("[OUT]  " + aes.decrypt(input2, input3));
+
+
+
+
+
+
+                    }
+                }
+
 
 
 
