@@ -1,10 +1,8 @@
 package company;
-
 import java.util.HashMap;
 
 public class DES {
-    private static boolean printOpDES = false;
-
+    boolean printOpDES = false;
     //initial permutation
     int IP[] = { 58, 50, 42, 34, 26, 18, 10, 2,
             60, 52, 44, 36, 28, 20, 12, 4,
