@@ -774,17 +774,54 @@ public class Main {
                 //System.out.println("mixor xor");
                 return xor(temp, Integer.toBinaryString(input2));
             }
-
             return "";
         }
 
+        int binaryDoubler(int value){
+            String temp;
+            if(value < 128){
+                temp = Integer.toBinaryString(value) + "0";
+            }
+            else{ 
+                temp = xor(Integer.toBinaryString(value) + "0", "000100011011");
+            }
+            return Integer.parseInt(temp, 2);
+        }
+
         String mixorInv(int input1, int input2){ //9, 11, 13, 14
+            String intToBin = Integer.toBinaryString(input2);
+            String temp = "";
+
+
+            if(input1 == 9){ // (((x * 2) * 2) * 2) + x
+                temp = xor(Integer.toBinaryString(binaryDoubler(binaryDoubler(binaryDoubler(input2)))), intToBin);
+            }
+            if(input1 == 11){ // ((((x * 2) * 2) + x) * 2) + x
+                
+            }
+            if(input1 == 13){ // ((((x * 2) + x) * 2) * 2) + x
+                
+            }
+            if(input1 == 14){ // ((((x * 2) + x) * 2) + x) * 2
+                
+            }
+            
+
+            System.out.println(temp);
+
+
+
             return "";
         }
 
         String[] mixColumns(String block[][], int mixer[][]){
             int blockInt[][] = new int[4][4]; //Convert old state byte strings to integers
             String matrix[] = new String[16]; //Final output "matrix" for mixColumns
+            boolean inverse = false;
+
+            if(mixer[0][0] == 2){
+                inverse = true;
+            }
 
             for(int i = 0; i < 4; i++){ //column-major print
                 for(int ii = 0; ii < 4; ii++){
@@ -799,7 +836,12 @@ public class Main {
                 for(int ii = 0; ii < 4; ii++){
                     //System.out.print(block[ii][i] + " ");
                     for(int x = 0; x < 4; x++) {
-                        temp = xor(temp, mixor(mixer[ii][x], blockInt[i][x]));
+                        if(inverse) {
+                            temp = xor(temp, mixor(mixer[ii][x], blockInt[i][x]));
+                        }
+                        else{
+                            temp = xor(temp, mixorInv(mixer[ii][x], blockInt[i][x]));
+                        }
                         //System.out.println(mixer[ii][x] + " * " + blockInt[i][x]);
                         //System.out.println(temp + " temp");
 
@@ -821,7 +863,15 @@ public class Main {
             return matrix;
         }
 
+        String[] roundInv(String keyBlock[], String roundKey) {
+            int mixerInv[][] = { { 14, 11, 13, 9 },
+                                 { 9, 14, 11, 13 },
+                                 { 13, 9, 14, 11 },
+                                 { 11, 13, 9, 14 } };
 
+
+            return null;
+        }
 
         String[] round(String keyBlock[], String roundKey[]){
 
@@ -905,15 +955,7 @@ public class Main {
             return addRoundKey;
         }
 
-        String[] roundInv(String keyBlock[], String roundKey){
-            int mixerInv[][] = { { 14, 11, 13, 9 },
-                                 { 9, 14, 11, 13 },
-                                 { 13, 9, 14, 11 },
-                                 { 11, 13, 9, 14 } };
-
-
-            return null;
-        }
+        
 
         String encrypt(String text, String key){
             String keySchedule[] = keySchedule(key);
@@ -1287,6 +1329,7 @@ public class Main {
 
                     }
                     if(manualInput == 2){
+                        /*
                         System.out.println("|--------------[DECRYPT]");
                         System.out.println();
                         System.out.println("128BIT[________________________________]");
@@ -1296,8 +1339,8 @@ public class Main {
                         System.out.print("[KEY]  ");
                         String input3 = sc2.nextLine();
                         System.out.println("[OUT]  " + aes.decrypt(input2, input3));
-
-
+                        */
+                        aes.mixorInv(9, 102);
 
                     }
                 }
