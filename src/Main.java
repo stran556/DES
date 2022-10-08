@@ -510,9 +510,14 @@ public class Main {
 
 
 
-        String sbox(String input){
-            int num = sbox[Integer.parseInt(input.substring(0, 1), 16)][Integer.parseInt(input.substring(1), 16)];
-
+        String sbox(String input, int choice){
+            int num = 0;
+            if(choice == 1) {
+                num = sbox[Integer.parseInt(input.substring(0, 1), 16)][Integer.parseInt(input.substring(1), 16)];
+            }
+            if(choice == 2) {
+                num = sboxInv[Integer.parseInt(input.substring(0, 1), 16)][Integer.parseInt(input.substring(1), 16)];
+            }
             return Integer.toHexString(num);
         }
 
@@ -535,6 +540,30 @@ public class Main {
             return xor;
         }
 
+        String xor(String input, String input2){
+            String i1 = "000000000000".substring(input.length()) + input;
+            String i2 = "000000000000".substring(input2.length()) + input2;
+            //System.out.println(i1 + " xor " + i2);
+            String builder = "";
+
+            for(int i = 0; i < i1.length(); i++){
+                if(i1.charAt(i) == i2.charAt(i)){
+                    builder = builder + "0";
+                }
+                else{
+                    builder = builder + "1";
+                }
+            }
+            //System.out.println("equals " + builder);
+            //System.out.println(i1);
+            //System.out.println(i2);
+
+            //System.out.println(i1 + "\n" + i2);
+            //System.out.println(builder);
+            //builder = binaryToHex(builder);
+            return builder;
+        }
+
         String[] rotWord(String input[]){
             String temp = input[0];
             input[0] = input[1];
@@ -551,7 +580,7 @@ public class Main {
 
         String[] subWord(String input[]){
             for(int i = 0; i < 4; i++){
-                input[i] = "00".substring(sbox(input[i]).length()) + sbox(input[i]);
+                input[i] = "00".substring(sbox(input[i], 1).length()) + sbox(input[i], 1);
             }
 
             return input;
@@ -648,36 +677,68 @@ public class Main {
             return ks;
         }
 
-        String[] subBytes(String roundKey[]){
+        String[] subBytes(String roundKey[], int num){
             for(int i = 0; i < roundKey.length; i++){
-                roundKey[i] = "00".substring(sbox(roundKey[i]).length()) + sbox(roundKey[i]);
+                roundKey[i] = "00".substring(sbox(roundKey[i], num).length()) + sbox(roundKey[i], num);
+
             }
 
             return roundKey;
         }
 
-        String[][] shiftRows(String block[][]){
+        String[][] shiftRows(String block[][], int num){
 
             String temp = "";
             String temp2 = "";
-            temp = block[1][0];
-            block[1][0] = block[1][1];
-            block[1][1] = block[1][2];
-            block[1][2] = block[1][3];
-            block[1][3] = temp;
 
-            temp = block[2][0];
-            temp2 = block[2][1];
-            block[2][0] = block[2][2];
-            block[2][2] = temp;
-            block[2][1] = block[2][3];
-            block[2][3] = temp2;
+            if(num == 1) { //1=leftshift
 
-            temp = block[3][3];
-            block[3][3] = block[3][2];
-            block[3][2] = block[3][1];
-            block[3][1] = block[3][0];
-            block[3][0] = temp;
+                //row1->leftshift1
+                temp = block[1][0];
+                block[1][0] = block[1][1];
+                block[1][1] = block[1][2];
+                block[1][2] = block[1][3];
+                block[1][3] = temp;
+
+                //row2->leftshift2 or rightshift2
+                temp = block[2][0];
+                temp2 = block[2][1];
+                block[2][0] = block[2][2];
+                block[2][2] = temp;
+                block[2][1] = block[2][3];
+                block[2][3] = temp2;
+
+                //row3-> leftshift3 or rightshift1
+                temp = block[3][3];
+                block[3][3] = block[3][2];
+                block[3][2] = block[3][1];
+                block[3][1] = block[3][0];
+                block[3][0] = temp;
+            }
+            else {
+                //row1->rightshift1
+                temp = block[1][1];
+                block[1][1] = block[1][0];
+                block[1][0] = block[1][3];
+                block[1][3] = block[1][2];
+                block[1][2] = temp;
+
+                //row2->leftshift2 or rightshift2
+                temp = block[2][0];
+                temp2 = block[2][1];
+                block[2][0] = block[2][2];
+                block[2][2] = temp;
+                block[2][1] = block[2][3];
+                block[2][3] = temp2;
+
+                //row3-> rightshift3 or leftshift1
+                temp = block[3][0];
+                block[3][0] = block[3][1];
+                block[3][1] = block[3][2];
+                block[3][2] = block[3][3];
+                block[3][3] = temp;
+
+            }
 
             for(int i = 0; i < 4; i++){ //column-major print
                 for(int ii = 0; ii < 4; ii++){
@@ -686,50 +747,6 @@ public class Main {
                 //System.out.println();
             }
             return block;
-        }
-
-        String[] mixColumns(String block[][]){
-            int mixer[][] = { { 2, 3, 1, 1 },
-                    { 1, 2, 3, 1 },
-                    { 1, 1, 2, 3 },
-                    { 3, 1, 1, 2 } };
-            int blockInt[][] = new int[4][4]; //Convert old state byte strings to integers
-            String matrix[] = new String[16]; //Final output "matrix" for mixColumns
-
-            for(int i = 0; i < 4; i++){ //column-major print
-                for(int ii = 0; ii < 4; ii++){
-                    //System.out.print(block[ii][i] + " ");
-                    blockInt[ii][i] = Integer.parseInt(block[i][ii], 16);
-                }
-            }
-
-
-            int counter = 0;
-            String temp = "000000000000"; //initial xor yields same value
-            for(int i = 0; i < 4; i++){ //column-major print
-                for(int ii = 0; ii < 4; ii++){
-                    //System.out.print(block[ii][i] + " ");
-                    for(int x = 0; x < 4; x++) {
-                        temp = xor(temp, mixor(mixer[ii][x], blockInt[i][x]));
-                        //System.out.println(mixer[ii][x] + " * " + blockInt[i][x]);
-                        //System.out.println(temp + " temp");
-
-                    }
-                    //System.out.print(binaryToHex(temp.substring(4)) + " ");
-                    matrix[counter] = binaryToHex(temp.substring(4));
-                    counter++;
-                    temp = "000000000000";
-                }
-            }
-
-            for (int r = 0; r < 16; r++) {
-                //System.out.print(matrix[r].toLowerCase() + " ");
-                if ((r + 1) % 4 == 0 && r != 0) {
-                    //System.out.println();
-                }
-            }
-
-            return matrix;
         }
 
         String mixor(int input1, int input2){ //mix matrix & old state multiplication, then return binary num to mixColumns
@@ -761,35 +778,62 @@ public class Main {
             return "";
         }
 
-        String xor(String input, String input2){
-            String i1 = "000000000000".substring(input.length()) + input;
-            String i2 = "000000000000".substring(input2.length()) + input2;
-            //System.out.println(i1 + " xor " + i2);
-            String builder = "";
+        String mixorInv(int input1, int input2){ //9, 11, 13, 14
+            return "";
+        }
 
-            for(int i = 0; i < i1.length(); i++){
-                if(i1.charAt(i) == i2.charAt(i)){
-                    builder = builder + "0";
-                }
-                else{
-                    builder = builder + "1";
+        String[] mixColumns(String block[][], int mixer[][]){
+            int blockInt[][] = new int[4][4]; //Convert old state byte strings to integers
+            String matrix[] = new String[16]; //Final output "matrix" for mixColumns
+
+            for(int i = 0; i < 4; i++){ //column-major print
+                for(int ii = 0; ii < 4; ii++){
+                    //System.out.print(block[ii][i] + " ");
+                    blockInt[ii][i] = Integer.parseInt(block[i][ii], 16);
                 }
             }
-            //System.out.println("equals " + builder);
-            //System.out.println(i1);
-            //System.out.println(i2);
 
-            //System.out.println(i1 + "\n" + i2);
-            //System.out.println(builder);
-            //builder = binaryToHex(builder);
-            return builder;
+            int counter = 0;
+            String temp = "000000000000"; //initial xor yields same value
+            for(int i = 0; i < 4; i++){ //column-major print
+                for(int ii = 0; ii < 4; ii++){
+                    //System.out.print(block[ii][i] + " ");
+                    for(int x = 0; x < 4; x++) {
+                        temp = xor(temp, mixor(mixer[ii][x], blockInt[i][x]));
+                        //System.out.println(mixer[ii][x] + " * " + blockInt[i][x]);
+                        //System.out.println(temp + " temp");
+
+                    }
+                    //System.out.print(binaryToHex(temp.substring(4)) + " ");
+                    matrix[counter] = binaryToHex(temp.substring(4));
+                    counter++;
+                    temp = "000000000000";
+                }
+            }
+
+            for (int r = 0; r < 16; r++) {
+                //System.out.print(matrix[r].toLowerCase() + " ");
+                if ((r + 1) % 4 == 0 && r != 0) {
+                    //System.out.println();
+                }
+            }
+
+            return matrix;
         }
+
+
+
+
 
         String[] round(String keyBlock[], String roundKey[]){
 
             String addRoundKey[] = new String[keyBlock.length];
             String builder = "";
             String mix[];
+            int mixer[][] = { { 2, 3, 1, 1 },
+                                { 1, 2, 3, 1 },
+                                { 1, 1, 2, 3 },
+                                { 3, 1, 1, 2 } };
 
             String blockOut[][] = arrayToBlock(roundKey);
 
@@ -804,7 +848,7 @@ public class Main {
             }
 
             //subBytes
-            addRoundKey = subBytes(roundKey);
+            addRoundKey = subBytes(roundKey, 1);
             multiplier = 0;
             for(int i = 0; i < 4; i++){
                 for(int ii = 4; ii < 8; ii++){
@@ -820,7 +864,7 @@ public class Main {
                 builder = builder + addRoundKey[i];
             }
             String block[][] = stringToBlock(builder);
-            block = shiftRows(block);
+            block = shiftRows(block, 1);
 
             multiplier = 0;
             for(int i = 0; i < 4; i++){
@@ -833,7 +877,7 @@ public class Main {
             }
 
             //mixcolumns
-            mix = mixColumns(block);
+            mix = mixColumns(block, mixer);
             multiplier = 0;
             for(int i = 0; i < 4; i++){
                 for(int ii = 12; ii < 16; ii++){
@@ -863,12 +907,21 @@ public class Main {
             return addRoundKey;
         }
 
+        String[] roundInv(String keyBlock[], String roundKey){
+            int mixerInv[][] = { { 14, 11, 13, 9 },
+                            { 9, 14, 11, 13 },
+                            { 13, 9, 14, 11 },
+                            { 11, 13, 9, 14 } };
+            return null;
+        }
+
         String encrypt(String text, String key){
             String keySchedule[] = keySchedule(key);
             String keyBlock[] = new String[16]; //round key array (16 bytes)
             String textArray[] = new String[text.length() / 2]; //text to array
             String addRoundKey[] = new String[16];
             String roundPrintInitial[] = new String[32];
+
 
 
             for(int x = 0; x < text.length(); x = x + 2){
@@ -993,7 +1046,7 @@ public class Main {
             }
 
             int counter = 0;
-            addRoundKey = subBytes(addRoundKey);
+            addRoundKey = subBytes(addRoundKey, 1);
             multiplier = 0;
             for(int i = 0; i < 4; i++){
                 for(int ii = 4; ii < 8; ii++){
@@ -1009,7 +1062,7 @@ public class Main {
                 builder = builder + addRoundKey[i];
             }
             String block[][] = stringToBlock(builder);
-            block = shiftRows(block);
+            block = shiftRows(block, 1);
 
             multiplier = 0;
             for(int i = 0; i < 4; i++){
@@ -1071,7 +1124,17 @@ public class Main {
         }
 
         String decrypt(String text, String key) {
-            return "coming soon...";
+            String keySchedule[] = keySchedule(key);
+            String keyBlock[] = new String[16]; //round key array (16 bytes)
+            String textArray[] = new String[text.length() / 2];
+
+            //Set text to array (1 byte/index)
+            for(int x = 0; x < text.length(); x = x + 2){
+                textArray[x / 2] = text.substring(0 + x, 2 + x).toLowerCase();
+            }
+
+
+            return "";
         }
     }
 
