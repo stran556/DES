@@ -823,17 +823,15 @@ public class Main {
 
 
 
-
-
         String[] round(String keyBlock[], String roundKey[]){
 
             String addRoundKey[] = new String[keyBlock.length];
             String builder = "";
             String mix[];
             int mixer[][] = { { 2, 3, 1, 1 },
-                                { 1, 2, 3, 1 },
-                                { 1, 1, 2, 3 },
-                                { 3, 1, 1, 2 } };
+                              { 1, 2, 3, 1 },
+                              { 1, 1, 2, 3 },
+                              { 3, 1, 1, 2 } };
 
             String blockOut[][] = arrayToBlock(roundKey);
 
@@ -909,9 +907,11 @@ public class Main {
 
         String[] roundInv(String keyBlock[], String roundKey){
             int mixerInv[][] = { { 14, 11, 13, 9 },
-                            { 9, 14, 11, 13 },
-                            { 13, 9, 14, 11 },
-                            { 11, 13, 9, 14 } };
+                                 { 9, 14, 11, 13 },
+                                 { 13, 9, 14, 11 },
+                                 { 11, 13, 9, 14 } };
+
+
             return null;
         }
 
@@ -982,8 +982,6 @@ public class Main {
                 System.out.println();
             }
 
-
-
             //ROUND KEY i
             for(int i = 1; i < keySchedule.length / 16 - 1; i++) { //9, 11, or 13 rounds
                 if(printOpAES)
@@ -1026,7 +1024,6 @@ public class Main {
                 }
 
             }
-
 
             //ROUND KEY FINAL
             String roundPrintFinal[] = new String[64];
@@ -1123,7 +1120,10 @@ public class Main {
             return finalBuilder;
         }
 
-        String decrypt(String text, String key) {
+
+
+
+        String decrypt(String text, String key) { //keys used in reverse order from key schedule
             String keySchedule[] = keySchedule(key);
             String keyBlock[] = new String[16]; //round key array (16 bytes)
             String textArray[] = new String[text.length() / 2];
@@ -1133,6 +1133,12 @@ public class Main {
                 textArray[x / 2] = text.substring(0 + x, 2 + x).toLowerCase();
             }
 
+
+            //ROUND FINAL
+
+            //ROUND i
+
+            //ROUND INITIAL
 
             return "";
         }
@@ -1293,13 +1299,8 @@ public class Main {
 
 
 
-
-
-
                     }
                 }
-
-
 
 
             }
