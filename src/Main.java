@@ -384,7 +384,7 @@ public class Main {
 
     private static class AES {
 
-        boolean printOpAES = true;
+        boolean printOpAES = false;
         String roundPrint[] = new String[80];
 
         // 0     1     2     3     4     5     6     7     8     9     a     b     c     d     e     f
@@ -664,6 +664,8 @@ public class Main {
             //System.out.println("Key Schedule (4 bytes per word, 4 words per key)");
             int keyCounter = 0;
             int counter = 0;
+            if(printOpAES)
+                System.out.println();
             for (int y = 0; y < round * 4 + 4; y++) {
                 if (y % 4 == 0) {
                     if(printOpAES)
@@ -882,17 +884,8 @@ public class Main {
                                  { 11, 13, 9, 14 } };
 
             roundKey = subBytes(blockToArray(shiftRows(arrayToBlock(roundKey), 2)), 2);
-            
             roundKey = xorArray(keyBlock, roundKey);
-
-
-            System.out.println("mix");
             roundKey = mixColumns(arrayToBlock(roundKey), mixerInv);
-            for(int i = 0; i < 16; i++){
-                System.out.print(roundKey[i] + " ");
-            }
-            
-            
             
             return roundKey;
         }
@@ -1178,7 +1171,7 @@ public class Main {
                 }
                 System.out.println();
             }
-            if(printOpAES)
+            
                 //System.out.print("\nFINAL: ");
             for(int i = 0; i < 16; i++){
                 finalBuilder = finalBuilder + addRoundKey[i];
@@ -1203,7 +1196,6 @@ public class Main {
             //ROUND FINAL
             for(int i = 0; i < 16; i++){
                 keyBlock[i] = keySchedule[keySchedule.length - 16 + i];
-                System.out.print(keyBlock[i] + " ");
             }
             
             addRoundKey = xorArray(textArray, keyBlock);
@@ -1216,16 +1208,21 @@ public class Main {
                 addRoundKey = roundInv(keyBlock, addRoundKey);
 
             }
-            
-
+            //ROUND INITIAL
+            addRoundKey = subBytes(blockToArray(shiftRows(arrayToBlock(addRoundKey), 2)), 2);
             for(int i = 0; i < 16; i++){
-                //System.out.print(addRoundKey[i] + " ");
+                keyBlock[i] = keySchedule[i];
+            }
+            addRoundKey = xorArray(addRoundKey, keyBlock);
+
+            String finalBuilder = "";
+            for(int i = 0; i < 16; i++){
+                finalBuilder = finalBuilder + addRoundKey[i];
             }
             
 
-            //ROUND INITIAL
-
-            return "";
+        
+            return finalBuilder;
         }
     }
 
@@ -1351,7 +1348,6 @@ public class Main {
                     String key = "5445584153564F4C4C455942414C4C31";
                     System.out.println();
                     System.out.println(aes.encrypt(text, key));
-                    System.out.println(aes.decrypt(aes.encrypt(text, key), key));
                 }
                 if(typeInput == 2){
                     System.out.println("|----------[MANUAL]");
@@ -1369,7 +1365,6 @@ public class Main {
                         System.out.print("[KEY]  ");
                         String input3 = sc2.nextLine();
                         System.out.println("[OUT]  " + aes.encrypt(input2, input3));
-
 
                     }
                     if(manualInput == 2){
