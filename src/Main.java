@@ -815,19 +815,20 @@ public class Main {
             if(input1 == 14){ // ((((x * 2) + x) * 2) + x) * 2
                 temp = Integer.toBinaryString(binaryDoubler(Integer.parseInt(xor(Integer.toBinaryString(binaryDoubler(Integer.parseInt(xor(Integer.toBinaryString(binaryDoubler(input2)), intToBin), 2))), intToBin), 2)));
             }
-            
-
-            System.out.println(temp);
+        
 
 
 
-            return "";
+            return temp;
         }
 
         String[] mixColumns(String block[][], int mixer[][]){
             int blockInt[][] = new int[4][4]; //Convert old state byte strings to integers
             String matrix[] = new String[16]; //Final output "matrix" for mixColumns
             boolean inverse = false;
+
+            //System.out.print(blockToString(block) + " block");
+            
 
             if(mixer[0][0] == 2){
                 inverse = true;
@@ -851,6 +852,7 @@ public class Main {
                         }
                         else{
                             temp = xor(temp, mixorInv(mixer[ii][x], blockInt[i][x]));
+
                         }
                         //System.out.println(mixer[ii][x] + " * " + blockInt[i][x]);
                         //System.out.println(temp + " temp");
@@ -873,14 +875,26 @@ public class Main {
             return matrix;
         }
 
-        String[] roundInv(String keyBlock[], String roundKey) {
+        String[] roundInv(String keyBlock[], String roundKey[]) {
             int mixerInv[][] = { { 14, 11, 13, 9 },
                                  { 9, 14, 11, 13 },
                                  { 13, 9, 14, 11 },
                                  { 11, 13, 9, 14 } };
 
+            roundKey = subBytes(blockToArray(shiftRows(arrayToBlock(roundKey), 2)), 2);
+            
+            roundKey = xorArray(keyBlock, roundKey);
 
-            return null;
+
+            System.out.println("mix");
+            roundKey = mixColumns(arrayToBlock(roundKey), mixerInv);
+            for(int i = 0; i < 16; i++){
+                System.out.print(roundKey[i] + " ");
+            }
+            
+            
+            
+            return roundKey;
         }
 
         String[] round(String keyBlock[], String roundKey[]){
@@ -1191,11 +1205,23 @@ public class Main {
                 keyBlock[i] = keySchedule[keySchedule.length - 16 + i];
                 System.out.print(keyBlock[i] + " ");
             }
-
+            
             addRoundKey = xorArray(textArray, keyBlock);
-            addRoundKey = subBytes(blockToArray(shiftRows(arrayToBlock(addRoundKey), 2)), 2);
 
             //ROUND i
+            for(int i = 0; i < (keySchedule.length / 16) - 2; i++){
+                for(int ii = 0; ii < 16; ii++){
+                    keyBlock[ii] = keySchedule[keySchedule.length - 32 - (i * 16) + ii];
+                }
+                addRoundKey = roundInv(keyBlock, addRoundKey);
+
+            }
+            
+
+            for(int i = 0; i < 16; i++){
+                //System.out.print(addRoundKey[i] + " ");
+            }
+            
 
             //ROUND INITIAL
 
