@@ -508,6 +508,18 @@ public class Main {
             return text;
         }
 
+        String[] blockToArray(String[][] block){
+            String array[] = new String[16];
+            int counter = 0;
+            for(int i = 0; i < 4; i++){
+                for(int ii = 0; ii < 4; ii++){
+                    array[counter] = block[ii][i];
+                    counter++;
+                }
+            }
+            return array;
+        }
+
 
 
         String sbox(String input, int choice){
@@ -680,7 +692,6 @@ public class Main {
         String[] subBytes(String roundKey[], int num){
             for(int i = 0; i < roundKey.length; i++){
                 roundKey[i] = "00".substring(sbox(roundKey[i], num).length()) + sbox(roundKey[i], num);
-
             }
 
             return roundKey;
@@ -1168,19 +1179,21 @@ public class Main {
             String keySchedule[] = keySchedule(key);
             String keyBlock[] = new String[16]; //round key array (16 bytes)
             String textArray[] = new String[text.length() / 2];
+            String addRoundKey[] = new String[16];
 
             //Set text to array (1 byte/index)
             for(int x = 0; x < text.length(); x = x + 2){
                 textArray[x / 2] = text.substring(0 + x, 2 + x).toLowerCase();
             }
             
-
-
             //ROUND FINAL
             for(int i = 0; i < 16; i++){
                 keyBlock[i] = keySchedule[keySchedule.length - 16 + i];
                 System.out.print(keyBlock[i] + " ");
             }
+
+            addRoundKey = xorArray(textArray, keyBlock);
+            addRoundKey = subBytes(blockToArray(shiftRows(arrayToBlock(addRoundKey), 2)), 2);
 
             //ROUND i
 
