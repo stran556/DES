@@ -792,18 +792,17 @@ public class Main {
             String intToBin = Integer.toBinaryString(input2);
             String temp = "";
 
-
             if(input1 == 9){ // (((x * 2) * 2) * 2) + x
                 temp = xor(Integer.toBinaryString(binaryDoubler(binaryDoubler(binaryDoubler(input2)))), intToBin);
             }
             if(input1 == 11){ // ((((x * 2) * 2) + x) * 2) + x
-                
+                temp = xor(Integer.toBinaryString(binaryDoubler(Integer.parseInt(xor(Integer.toBinaryString(binaryDoubler(binaryDoubler(input2))), intToBin), 2))), intToBin);
             }
             if(input1 == 13){ // ((((x * 2) + x) * 2) * 2) + x
-                
+                temp = xor(Integer.toBinaryString(binaryDoubler(binaryDoubler(Integer.parseInt(xor(Integer.toBinaryString(binaryDoubler(input2)), intToBin), 2)))), intToBin);
             }
             if(input1 == 14){ // ((((x * 2) + x) * 2) + x) * 2
-                
+                temp = Integer.toBinaryString(binaryDoubler(Integer.parseInt(xor(Integer.toBinaryString(binaryDoubler(Integer.parseInt(xor(Integer.toBinaryString(binaryDoubler(input2)), intToBin), 2))), intToBin), 2)));
             }
             
 
@@ -1155,7 +1154,7 @@ public class Main {
                 System.out.println();
             }
             if(printOpAES)
-                System.out.print("\nFINAL: ");
+                //System.out.print("\nFINAL: ");
             for(int i = 0; i < 16; i++){
                 finalBuilder = finalBuilder + addRoundKey[i];
             }
@@ -1174,9 +1173,14 @@ public class Main {
             for(int x = 0; x < text.length(); x = x + 2){
                 textArray[x / 2] = text.substring(0 + x, 2 + x).toLowerCase();
             }
+            
 
 
             //ROUND FINAL
+            for(int i = 0; i < 16; i++){
+                keyBlock[i] = keySchedule[keySchedule.length - 16 + i];
+                System.out.print(keyBlock[i] + " ");
+            }
 
             //ROUND i
 
@@ -1308,6 +1312,7 @@ public class Main {
                     String key = "5445584153564F4C4C455942414C4C31";
                     System.out.println();
                     System.out.println(aes.encrypt(text, key));
+                    System.out.println(aes.decrypt(aes.encrypt(text, key), key));
                 }
                 if(typeInput == 2){
                     System.out.println("|----------[MANUAL]");
@@ -1329,7 +1334,7 @@ public class Main {
 
                     }
                     if(manualInput == 2){
-                        /*
+                        
                         System.out.println("|--------------[DECRYPT]");
                         System.out.println();
                         System.out.println("128BIT[________________________________]");
@@ -1339,8 +1344,7 @@ public class Main {
                         System.out.print("[KEY]  ");
                         String input3 = sc2.nextLine();
                         System.out.println("[OUT]  " + aes.decrypt(input2, input3));
-                        */
-                        aes.mixorInv(9, 102);
+                        
 
                     }
                 }
