@@ -385,7 +385,7 @@ public class Main {
     private static class AES {
         
         //step-by-step printing
-        boolean printOpAES = true;
+        boolean printOpAES = false;
         String roundPrintInitial[] = new String[32];
         String roundPrint[] = new String[80];
         String roundPrintFinal[] = new String[64];
@@ -835,9 +835,24 @@ public class Main {
                                  { 13, 9, 14, 11 },
                                  { 11, 13, 9, 14 } };
 
-            roundKey = subBytes(blockToArray(shiftRows(arrayToBlock(roundKey), 2)), 2);
+            //roundkey
+            roundPrintCalculate(roundPrint, arrayToBlock(roundKey), 20, 0);
+
+            //invShiftRows
+            roundKey = blockToArray(shiftRows(arrayToBlock(roundKey), 2));
+            roundPrintCalculate(roundPrint, arrayToBlock(roundKey), 20, 4);
+
+            //invSubBytes
+            roundKey = subBytes(roundKey, 2);
+            roundPrintCalculate(roundPrint, arrayToBlock(roundKey), 20, 8);
+
+            //addRoundKey
             roundKey = xorArray(keyBlock, roundKey);
+            roundPrintCalculate(roundPrint, arrayToBlock(roundKey), 20, 12);
+
+            //invMixColumns
             roundKey = mixColumns(arrayToBlock(roundKey), mixerInv);
+            roundPrintCalculate(roundPrint, arrayToBlock(roundKey), 20, 16);
             
             return roundKey;
         }
@@ -852,8 +867,7 @@ public class Main {
                               { 3, 1, 1, 2 } };
             
             //roundkey
-            block = arrayToBlock(roundKey);
-            roundPrintCalculate(roundPrint, block, 20, 0);
+            roundPrintCalculate(roundPrint, arrayToBlock(roundKey), 20, 0);
             
             //subBytes
             addRoundKey = subBytes(roundKey, 1);
@@ -886,7 +900,7 @@ public class Main {
             }
 
             if(printOpAES) {
-                System.out.print("\nTEXT: ");
+                System.out.print("\nTXT: ");
                 System.out.print(text.toLowerCase());
                 System.out.print("\nKEY: ");
                 System.out.println(key.toLowerCase());
@@ -931,7 +945,7 @@ public class Main {
                 addRoundKey = round(keyBlock, addRoundKey); //result of mixcolumn xor keyBlock, goes back into next round as addRoundkey
 
                 if(printOpAES) {
-                    System.out.println("     RoundKey         SubBytes        ShiftRows        MixColumns       AddRoundKey");
+                    System.out.println("    PrevRound         SubBytes        ShiftRows        MixColumns       AddRoundKey");
                     for (int a = 0; a < roundPrint.length; a++) {
                         if (a % 20 == 0) {
                             System.out.print("|");
@@ -974,7 +988,7 @@ public class Main {
             roundPrintCalculate(roundPrintFinal, arrayToBlock(addRoundKey), 16, 12);
             
             if(printOpAES) {
-                System.out.println("     RoundKey         SubBytes        ShiftRows        AddRoundKey");
+                System.out.println("    PrevRound         SubBytes        ShiftRows       Ciphertext");
                 for (int a = 0; a < roundPrintFinal.length; a++) {
                     if (a % 16 == 0) {
                         System.out.print("|");
@@ -1003,7 +1017,13 @@ public class Main {
             String textArray[] = new String[text.length() / 2];
             String addRoundKey[] = new String[16];
 
-            //Set text to array (1 byte/index)
+            if(printOpAES) {
+                System.out.print("\nTXT: ");
+                System.out.print(text.toLowerCase());
+                System.out.print("\nKEY: ");
+                System.out.println(key.toLowerCase());
+                System.out.println();
+            }
             for(int x = 0; x < text.length(); x = x + 2){
                 textArray[x / 2] = text.substring(0 + x, 2 + x).toLowerCase();
             }
@@ -1013,25 +1033,90 @@ public class Main {
                 keyBlock[i] = keySchedule[keySchedule.length - 16 + i];
             }
             
-            addRoundKey = xorArray(textArray, keyBlock);
+            roundPrintCalculate(roundPrintInitial, arrayToBlock(textArray), 8, 0);
 
-            //ROUND i
+            addRoundKey = xorArray(textArray, keyBlock);
+            roundPrintCalculate(roundPrintInitial, arrayToBlock(addRoundKey), 8, 4);
+            
+            if(printOpAES) {
+                System.out.println("    Ciphertext       AddRoundKey");
+                for (int a = 0; a < roundPrintInitial.length; a++) {
+                    if (a % 8 == 0) {
+                        System.out.print("|");
+                    }
+                    System.out.print(" " + roundPrintInitial[a] + " ");
+                    if ((a + 1) % 4 == 0 && a != 0) {
+                        System.out.print("|");
+                    }
+                    if ((a + 1) % 8 == 0 && a != 0) {
+                        System.out.println();
+                    }
+                }
+                System.out.println();
+            }
+
+            //ROUND KEY i 
             for(int i = 0; i < (keySchedule.length / 16) - 2; i++){
                 for(int ii = 0; ii < 16; ii++){
                     keyBlock[ii] = keySchedule[keySchedule.length - 32 - (i * 16) + ii];
                 }
                 addRoundKey = roundInv(keyBlock, addRoundKey);
+
+                if(printOpAES) {
+                    System.out.println("ROUND " + ((keySchedule.length / 16) - 1 - i));
+                    System.out.println("    PrevRound       InvShiftRows      InvSubBytes      AddRoundKey     InvMixColumns");
+                    for (int a = 0; a < roundPrint.length; a++) {
+                        if (a % 20 == 0) {
+                            System.out.print("|");
+                        }
+                        System.out.print(" " + roundPrint[a] + " ");
+                        if ((a + 1) % 4 == 0 && a != 0) {
+                            System.out.print("|");
+                        }
+                        if ((a + 1) % 20 == 0 && a != 0) {
+                            System.out.println();
+                        }
+                    }
+                    System.out.println();
+                }
             }
 
-            //ROUND FINAL (Inverse)
-            addRoundKey = blockToArray(shiftRows(arrayToBlock(addRoundKey), 2));
+            
 
+            //ROUND FINAL (Inverse)
+            roundPrintCalculate(roundPrintFinal, arrayToBlock(addRoundKey), 16, 0);
+
+            //InvShiftRows
+            addRoundKey = blockToArray(shiftRows(arrayToBlock(addRoundKey), 2));
+            roundPrintCalculate(roundPrintFinal, arrayToBlock(addRoundKey), 16, 4);
+
+            //InvSubBytes
             addRoundKey = subBytes(addRoundKey, 2);
+            roundPrintCalculate(roundPrintFinal, arrayToBlock(addRoundKey), 16, 8);
 
             for(int i = 0; i < 16; i++){
                 keyBlock[i] = keySchedule[i];
             }
             addRoundKey = xorArray(addRoundKey, keyBlock);
+            roundPrintCalculate(roundPrintFinal, arrayToBlock(addRoundKey), 16, 12);
+
+            if(printOpAES) {
+                System.out.println("ROUND 1");
+                System.out.println("    PrevRound       InvShiftRows      InvSubBytes      Plaintext        ");
+                for (int a = 0; a < roundPrintFinal.length; a++) {
+                    if (a % 16 == 0) {
+                        System.out.print("|");
+                    }
+                    System.out.print(" " + roundPrintFinal[a] + " ");
+                    if ((a + 1) % 4 == 0 && a != 0) {
+                        System.out.print("|");
+                    }
+                    if ((a + 1) % 16 == 0 && a != 0) {
+                        System.out.println();
+                    }
+                }
+                System.out.println();
+            }
 
             String finalBuilder = "";
             for(int i = 0; i < 16; i++){
@@ -1043,7 +1128,7 @@ public class Main {
     } //end class AES
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         try {
             Scanner cs = new Scanner(System.in);
@@ -1164,10 +1249,20 @@ public class Main {
                     String key = "5445584153564F4C4C455942414C4C31";
                     System.out.println();
                     String ciphertext = aes.encrypt(text, key);
+
+                    System.out.println("\n________________[FILE]________________");
+                    Thread.sleep(1000);
                     System.out.println("[TXT] " + text.toLowerCase());
                     System.out.println("[KEY] " + key.toLowerCase());
+                    Thread.sleep(1000);
+                    System.out.println("\n_____________[ENCRYPTION]_____________");
+                    Thread.sleep(1000);
                     System.out.println("[ENC] " + ciphertext);
+                    Thread.sleep(1000);
+                    System.out.println("\n_____________[DECRYPTION]_____________");
+                    Thread.sleep(1000);
                     System.out.println("[DEC] " + aes.decrypt(ciphertext, key));
+                    Thread.sleep(1000);
                 }
                 if(typeInput == 2){
                     System.out.println("|----------[MANUAL]");
