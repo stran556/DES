@@ -384,7 +384,7 @@ public class Main {
 
     private static class AES {
 
-        boolean printOpAES = false;
+        boolean printOpAES = true;
         String roundPrint[] = new String[80];
 
         // 0     1     2     3     4     5     6     7     8     9     a     b     c     d     e     f
@@ -662,10 +662,11 @@ public class Main {
             //fix the key issue...
 
             //System.out.println("Key Schedule (4 bytes per word, 4 words per key)");
+            
             int keyCounter = 0;
             int counter = 0;
             if(printOpAES)
-                System.out.println();
+                System.out.println("\n_____________________Key Schedule_____________________");
             for (int y = 0; y < round * 4 + 4; y++) {
                 if (y % 4 == 0) {
                     if(printOpAES)
@@ -1171,7 +1172,6 @@ public class Main {
                 }
                 System.out.println();
             }
-            
                 //System.out.print("\nFINAL: ");
             for(int i = 0; i < 16; i++){
                 finalBuilder = finalBuilder + addRoundKey[i];
@@ -1206,8 +1206,8 @@ public class Main {
                     keyBlock[ii] = keySchedule[keySchedule.length - 32 - (i * 16) + ii];
                 }
                 addRoundKey = roundInv(keyBlock, addRoundKey);
-
             }
+
             //ROUND INITIAL
             addRoundKey = subBytes(blockToArray(shiftRows(arrayToBlock(addRoundKey), 2)), 2);
             for(int i = 0; i < 16; i++){
@@ -1347,7 +1347,11 @@ public class Main {
                     String text = "4D41444953454E534B494E4E45523036";
                     String key = "5445584153564F4C4C455942414C4C31";
                     System.out.println();
-                    System.out.println(aes.encrypt(text, key));
+                    String ciphertext = aes.encrypt(text, key);
+                    System.out.println("[TXT] " + text.toLowerCase());
+                    System.out.println("[KEY] " + key.toLowerCase());
+                    System.out.println("[ENC] " + ciphertext);
+                    System.out.println("[DEC] " + aes.decrypt(ciphertext, key));
                 }
                 if(typeInput == 2){
                     System.out.println("|----------[MANUAL]");
