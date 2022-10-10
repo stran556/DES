@@ -889,7 +889,29 @@ public class Main {
             return addRoundKey;
         }
 
+        String handleInput(String input, String name){
+
+            if(!input.matches("-?[0-9a-fA-F]+")){
+                System.out.print("\nOperation Failed. Ensure input is not empty and is in hexadecimal.");
+                System.exit(0);
+            }
+
+            int len = input.length();
+            if(input.length() < 32){
+                input = input + "00000000000000000000000000000000".substring(input.length());
+                System.out.println(name + " too short, padding with " + (32 - len) + " zero(s) (" + ((32 - len) * 4) + " bits)");
+            }
+            if(input.length() > 32){
+                input = input.substring(0, 32);
+                System.out.println(name + " too long, trimming off " + (len - 32) + " character(s) (" + ((len - 32) * 4) + " bits)");
+            }
+            return input;
+        }
+
         String encrypt(String text, String key){
+            text = handleInput(text, "TXT");
+            key = handleInput(key, "KEY");    
+
             String keySchedule[] = keySchedule(key);
             String keyBlock[] = new String[16]; //round key array (16 bytes)
             String textArray[] = new String[text.length() / 2]; //text to array
@@ -1251,19 +1273,20 @@ public class Main {
                     String ciphertext = aes.encrypt(text, key);
 
                     System.out.println("\n________________[FILE]________________");
-                    Thread.sleep(1000);
+                    Thread.sleep(250);
                     System.out.println("[TXT] " + text.toLowerCase());
                     System.out.println("[KEY] " + key.toLowerCase());
-                    Thread.sleep(1000);
+                    Thread.sleep(250);
                     System.out.println("\n_____________[ENCRYPTION]_____________");
-                    Thread.sleep(1000);
+                    Thread.sleep(250);
                     System.out.println("[ENC] " + ciphertext);
-                    Thread.sleep(1000);
+                    Thread.sleep(250);
                     System.out.println("\n_____________[DECRYPTION]_____________");
-                    Thread.sleep(1000);
+                    Thread.sleep(250);
                     System.out.println("[DEC] " + aes.decrypt(ciphertext, key));
-                    Thread.sleep(1000);
+                    Thread.sleep(250);
                 }
+                
                 if(typeInput == 2){
                     System.out.println("|----------[MANUAL]");
                     System.out.println("|            [1]ENCRYPT \n|            [2]DECRYPT ");
