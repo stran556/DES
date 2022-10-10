@@ -383,7 +383,8 @@ public class Main {
     }
 
     private static class AES {
-
+        
+        //step-by-step printing
         boolean printOpAES = true;
         String roundPrintInitial[] = new String[32];
         String roundPrint[] = new String[80];
@@ -408,28 +409,28 @@ public class Main {
                         { 0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16 }};
 
         int sboxInv[][] = {{ 0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3, 0x9e, 0x81, 0xf3, 0xd7, 0xfb },
-                            { 0x7c, 0xe3, 0x39, 0x82, 0x9b, 0x2f, 0xff, 0x87, 0x34, 0x8e, 0x43, 0x44, 0xc4, 0xde, 0xe9, 0xcb },
-                            { 0x54, 0x7b, 0x94, 0x32, 0xa6, 0xc2, 0x23, 0x3d, 0xee, 0x4c, 0x95, 0x0b, 0x42, 0xfa, 0xc3, 0x4e },
-                            { 0x08, 0x2e, 0xa1, 0x66, 0x28, 0xd9, 0x24, 0xb2, 0x76, 0x5b, 0xa2, 0x49, 0x6d, 0x8b, 0xd1, 0x25 },
-                            { 0x72, 0xf8, 0xf6, 0x64, 0x86, 0x68, 0x98, 0x16, 0xd4, 0xa4, 0x5c, 0xcc, 0x5d, 0x65, 0xb6, 0x92 },
-                            { 0x6c, 0x70, 0x48, 0x50, 0xfd, 0xed, 0xb9, 0xda, 0x5e, 0x15, 0x46, 0x57, 0xa7, 0x8d, 0x9d, 0x84 },
-                            { 0x90, 0xd8, 0xab, 0x00, 0x8c, 0xbc, 0xd3, 0x0a, 0xf7, 0xe4, 0x58, 0x05, 0xb8, 0xb3, 0x45, 0x06 },
-                            { 0xd0, 0x2c, 0x1e, 0x8f, 0xca, 0x3f, 0x0f, 0x02, 0xc1, 0xaf, 0xbd, 0x03, 0x01, 0x13, 0x8a, 0x6b },
-                            { 0x3a, 0x91, 0x11, 0x41, 0x4f, 0x67, 0xdc, 0xea, 0x97, 0xf2, 0xcf, 0xce, 0xf0, 0xb4, 0xe6, 0x73 },
-                            { 0x96, 0xac, 0x74, 0x22, 0xe7, 0xad, 0x35, 0x85, 0xe2, 0xf9, 0x37, 0xe8, 0x1c, 0x75, 0xdf, 0x6e },
-                            { 0x47, 0xf1, 0x1a, 0x71, 0x1d, 0x29, 0xc5, 0x89, 0x6f, 0xb7, 0x62, 0x0e, 0xaa, 0x18, 0xbe, 0x1b },
-                            { 0xfc, 0x56, 0x3e, 0x4b, 0xc6, 0xd2, 0x79, 0x20, 0x9a, 0xdb, 0xc0, 0xfe, 0x78, 0xcd, 0x5a, 0xf4 },
-                            { 0x1f, 0xdd, 0xa8, 0x33, 0x88, 0x07, 0xc7, 0x31, 0xb1, 0x12, 0x10, 0x59, 0x27, 0x80, 0xec, 0x5f },
-                            { 0x60, 0x51, 0x7f, 0xa9, 0x19, 0xb5, 0x4a, 0x0d, 0x2d, 0xe5, 0x7a, 0x9f, 0x93, 0xc9, 0x9c, 0xef },
-                            { 0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61 },
-                            { 0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d }};
+                           { 0x7c, 0xe3, 0x39, 0x82, 0x9b, 0x2f, 0xff, 0x87, 0x34, 0x8e, 0x43, 0x44, 0xc4, 0xde, 0xe9, 0xcb },
+                           { 0x54, 0x7b, 0x94, 0x32, 0xa6, 0xc2, 0x23, 0x3d, 0xee, 0x4c, 0x95, 0x0b, 0x42, 0xfa, 0xc3, 0x4e },
+                           { 0x08, 0x2e, 0xa1, 0x66, 0x28, 0xd9, 0x24, 0xb2, 0x76, 0x5b, 0xa2, 0x49, 0x6d, 0x8b, 0xd1, 0x25 },
+                           { 0x72, 0xf8, 0xf6, 0x64, 0x86, 0x68, 0x98, 0x16, 0xd4, 0xa4, 0x5c, 0xcc, 0x5d, 0x65, 0xb6, 0x92 },
+                           { 0x6c, 0x70, 0x48, 0x50, 0xfd, 0xed, 0xb9, 0xda, 0x5e, 0x15, 0x46, 0x57, 0xa7, 0x8d, 0x9d, 0x84 },
+                           { 0x90, 0xd8, 0xab, 0x00, 0x8c, 0xbc, 0xd3, 0x0a, 0xf7, 0xe4, 0x58, 0x05, 0xb8, 0xb3, 0x45, 0x06 },
+                           { 0xd0, 0x2c, 0x1e, 0x8f, 0xca, 0x3f, 0x0f, 0x02, 0xc1, 0xaf, 0xbd, 0x03, 0x01, 0x13, 0x8a, 0x6b },
+                           { 0x3a, 0x91, 0x11, 0x41, 0x4f, 0x67, 0xdc, 0xea, 0x97, 0xf2, 0xcf, 0xce, 0xf0, 0xb4, 0xe6, 0x73 },
+                           { 0x96, 0xac, 0x74, 0x22, 0xe7, 0xad, 0x35, 0x85, 0xe2, 0xf9, 0x37, 0xe8, 0x1c, 0x75, 0xdf, 0x6e },
+                           { 0x47, 0xf1, 0x1a, 0x71, 0x1d, 0x29, 0xc5, 0x89, 0x6f, 0xb7, 0x62, 0x0e, 0xaa, 0x18, 0xbe, 0x1b },
+                           { 0xfc, 0x56, 0x3e, 0x4b, 0xc6, 0xd2, 0x79, 0x20, 0x9a, 0xdb, 0xc0, 0xfe, 0x78, 0xcd, 0x5a, 0xf4 },
+                           { 0x1f, 0xdd, 0xa8, 0x33, 0x88, 0x07, 0xc7, 0x31, 0xb1, 0x12, 0x10, 0x59, 0x27, 0x80, 0xec, 0x5f },
+                           { 0x60, 0x51, 0x7f, 0xa9, 0x19, 0xb5, 0x4a, 0x0d, 0x2d, 0xe5, 0x7a, 0x9f, 0x93, 0xc9, 0x9c, 0xef },
+                           { 0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61 },
+                           { 0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d }};
 
         String hexToBinary(String input){
             String output = "";
             input = input.toUpperCase();
 
             HashMap<Character, String> hashMap = new HashMap<Character, String>();
-            hashMap.put('0', "0000");
+            hashMap.put('0', "0000"); 
             hashMap.put('1', "0001");
             hashMap.put('2', "0010");
             hashMap.put('3', "0011");
@@ -478,13 +479,6 @@ public class Main {
                     counter = counter + 2;
                 }
             }
-
-            for(int i = 0; i < 4; i++){ //column-major print
-                for(int ii = 0; ii < 4; ii++){
-                    //System.out.print(block[i][ii] + " ");
-                }
-                //System.out.println();
-            }
             return block;
         }
 
@@ -522,8 +516,6 @@ public class Main {
             return array;
         }
 
-
-
         String sbox(String input, int choice){
             int num = 0;
             if(choice == 1) {
@@ -557,7 +549,6 @@ public class Main {
         String xor(String input, String input2){
             String i1 = "000000000000".substring(input.length()) + input;
             String i2 = "000000000000".substring(input2.length()) + input2;
-            //System.out.println(i1 + " xor " + i2);
             String builder = "";
 
             for(int i = 0; i < i1.length(); i++){
@@ -568,13 +559,6 @@ public class Main {
                     builder = builder + "1";
                 }
             }
-            //System.out.println("equals " + builder);
-            //System.out.println(i1);
-            //System.out.println(i2);
-
-            //System.out.println(i1 + "\n" + i2);
-            //System.out.println(builder);
-            //builder = binaryToHex(builder);
             return builder;
         }
 
@@ -584,11 +568,6 @@ public class Main {
             input[1] = input[2];
             input[2] = input[3];
             input[3] = temp;
-
-            //for(int i = 0; i < 4; i++){
-            //    System.out.println(input[i]);
-            //}
-
             return input;
         }
 
@@ -628,6 +607,7 @@ public class Main {
                 round = 10;
                 rcon = 10;
             }
+
             String input[] = new String[4];
             String keySchedule[][] = new String[round * 4 + 4][4]; //length 44 for 128bit, 52 for 192bit, 60 for 256bit
             String ks[] = new String[(round + 1) * 16];
@@ -635,9 +615,9 @@ public class Main {
             for(int i = 0; i < 4; i++){ //Move column-major block into row-major block
                 for(int ii = 0; ii < 4; ii++){
                     keySchedule[i][ii] = block[ii][i];
-                    //System.out.println(keySchedule[i][ii]);
                 }
             }
+
             for(int i = 0; i < round; i++){
 
                 for(int s = 0; s < 4; s++){ //assign array w/o using reference space
@@ -660,15 +640,12 @@ public class Main {
                 keySchedule[i * 4 + 7] = xorArray(keySchedule[i * 4 + 3], keySchedule[i * 4 + 6]); //input to next round rotword
             }
 
-
-            //fix the key issue...
-
-            //System.out.println("Key Schedule (4 bytes per word, 4 words per key)");
             
-            int keyCounter = 0;
-            int counter = 0;
             if(printOpAES)
                 System.out.println("\n_____________________Key Schedule_____________________");
+
+            int keyCounter = 0;
+            int counter = 0;    
             for (int y = 0; y < round * 4 + 4; y++) {
                 if (y % 4 == 0) {
                     if(printOpAES)
@@ -686,11 +663,6 @@ public class Main {
                     keyCounter++;
                 }
             }
-
-            for(int p = 0; p < ks.length; p++){
-                //System.out.print(ks[p] + " ");
-            }
-
             return ks;
         }
 
@@ -708,7 +680,6 @@ public class Main {
             String temp2 = "";
 
             if(num == 1) { //1=leftshift
-
                 //row1->leftshift1
                 temp = block[1][0];
                 block[1][0] = block[1][1];
@@ -755,18 +726,10 @@ public class Main {
                 block[3][3] = temp;
 
             }
-
-            for(int i = 0; i < 4; i++){ //column-major print
-                for(int ii = 0; ii < 4; ii++){
-                    //System.out.print(block[i][ii] + " ");
-                }
-                //System.out.println();
-            }
             return block;
         }
 
         String mixor(int input1, int input2){ //mix matrix & old state multiplication, then return binary num to mixColumns
-            //System.out.println(input1 + "mixor" + input2);
             if(input1 == 1){
                 return Integer.toBinaryString(input2);
             }
@@ -774,7 +737,7 @@ public class Main {
                 if(input2 < 128){
                     return Integer.toBinaryString(input2) + "0";
                 }
-                else{ //System.out.println("mixor xor");
+                else{ 
                     return xor(Integer.toBinaryString(input2) + "0", "000100011011");
                 }
             }
@@ -784,10 +747,8 @@ public class Main {
                     temp = Integer.toBinaryString(input2) + "0";
                 }
                 else{
-                    //System.out.println("mixor xor");
                     temp = xor(Integer.toBinaryString(input2) + "0", "000100011011");
                 }
-                //System.out.println("mixor xor");
                 return xor(temp, Integer.toBinaryString(input2));
             }
             return "";
@@ -820,10 +781,6 @@ public class Main {
             if(input1 == 14){ // ((((x * 2) + x) * 2) + x) * 2
                 temp = Integer.toBinaryString(binaryDoubler(Integer.parseInt(xor(Integer.toBinaryString(binaryDoubler(Integer.parseInt(xor(Integer.toBinaryString(binaryDoubler(input2)), intToBin), 2))), intToBin), 2)));
             }
-        
-
-
-
             return temp;
         }
 
@@ -832,16 +789,12 @@ public class Main {
             String matrix[] = new String[16]; //Final output "matrix" for mixColumns
             boolean inverse = false;
 
-            //System.out.print(blockToString(block) + " block");
-            
-
             if(mixer[0][0] == 2){
                 inverse = true;
             }
 
             for(int i = 0; i < 4; i++){ //column-major print
                 for(int ii = 0; ii < 4; ii++){
-                    //System.out.print(block[ii][i] + " ");
                     blockInt[ii][i] = Integer.parseInt(block[i][ii], 16);
                 }
             }
@@ -850,47 +803,20 @@ public class Main {
             String temp = "000000000000"; //initial xor yields same value
             for(int i = 0; i < 4; i++){ //column-major print
                 for(int ii = 0; ii < 4; ii++){
-                    //System.out.print(block[ii][i] + " ");
                     for(int x = 0; x < 4; x++) {
                         if(inverse) {
                             temp = xor(temp, mixor(mixer[ii][x], blockInt[i][x]));
                         }
                         else{
                             temp = xor(temp, mixorInv(mixer[ii][x], blockInt[i][x]));
-
                         }
-                        //System.out.println(mixer[ii][x] + " * " + blockInt[i][x]);
-                        //System.out.println(temp + " temp");
-
                     }
-                    //System.out.print(binaryToHex(temp.substring(4)) + " ");
                     matrix[counter] = binaryToHex(temp.substring(4));
                     counter++;
                     temp = "000000000000";
                 }
             }
-
-            for (int r = 0; r < 16; r++) {
-                //System.out.print(matrix[r].toLowerCase() + " ");
-                if ((r + 1) % 4 == 0 && r != 0) {
-                    //System.out.println();
-                }
-            }
-
             return matrix;
-        }
-
-        String[] roundInv(String keyBlock[], String roundKey[]) {
-            int mixerInv[][] = { { 14, 11, 13, 9 },
-                                 { 9, 14, 11, 13 },
-                                 { 13, 9, 14, 11 },
-                                 { 11, 13, 9, 14 } };
-
-            roundKey = subBytes(blockToArray(shiftRows(arrayToBlock(roundKey), 2)), 2);
-            roundKey = xorArray(keyBlock, roundKey);
-            roundKey = mixColumns(arrayToBlock(roundKey), mixerInv);
-            
-            return roundKey;
         }
 
         void roundPrintCalculate(String array[], String array2[][], int multiplier, int blockStart){ //given round array, perform print preparation
@@ -903,8 +829,20 @@ public class Main {
             }
         }
 
-        String[] round(String keyBlock[], String roundKey[]){
+        String[] roundInv(String keyBlock[], String roundKey[]){
+            int mixerInv[][] = { { 14, 11, 13, 9 },
+                                 { 9, 14, 11, 13 },
+                                 { 13, 9, 14, 11 },
+                                 { 11, 13, 9, 14 } };
 
+            roundKey = subBytes(blockToArray(shiftRows(arrayToBlock(roundKey), 2)), 2);
+            roundKey = xorArray(keyBlock, roundKey);
+            roundKey = mixColumns(arrayToBlock(roundKey), mixerInv);
+            
+            return roundKey;
+        }
+
+        String[] round(String keyBlock[], String roundKey[]){
             String addRoundKey[] = new String[keyBlock.length];
             String mix[];
             String block[][];
@@ -937,8 +875,6 @@ public class Main {
             return addRoundKey;
         }
 
-        
-
         String encrypt(String text, String key){
             String keySchedule[] = keySchedule(key);
             String keyBlock[] = new String[16]; //round key array (16 bytes)
@@ -948,6 +884,7 @@ public class Main {
             for(int x = 0; x < text.length(); x = x + 2){
                 textArray[x / 2] = text.substring(0 + x, 2 + x).toLowerCase();
             }
+
             if(printOpAES) {
                 System.out.print("\nTEXT: ");
                 System.out.print(text.toLowerCase());
@@ -1060,8 +997,6 @@ public class Main {
             return finalBuilder;
         }
 
-
-
         String decrypt(String text, String key) { //keys used in reverse order from key schedule
             String keySchedule[] = keySchedule(key);
             String keyBlock[] = new String[16]; //round key array (16 bytes)
@@ -1089,7 +1024,10 @@ public class Main {
             }
 
             //ROUND FINAL (Inverse)
-            addRoundKey = subBytes(blockToArray(shiftRows(arrayToBlock(addRoundKey), 2)), 2);
+            addRoundKey = blockToArray(shiftRows(arrayToBlock(addRoundKey), 2));
+
+            addRoundKey = subBytes(addRoundKey, 2);
+
             for(int i = 0; i < 16; i++){
                 keyBlock[i] = keySchedule[i];
             }
@@ -1101,7 +1039,8 @@ public class Main {
             }
             return finalBuilder;
         }
-    }
+
+    } //end class AES
 
 
     public static void main(String[] args) {
@@ -1113,7 +1052,7 @@ public class Main {
             System.out.print("|     ");
             int enc = cs.nextInt();
 
-            if(enc == 1) { //DES
+            if(enc == 1) { //DES...
                 DES des = new DES();
                 System.out.println("|------[DES]");
                 System.out.println("|        [1]FILE \n|        [2]MANUAL ");
@@ -1259,12 +1198,8 @@ public class Main {
                         System.out.print("[KEY]  ");
                         String input3 = sc2.nextLine();
                         System.out.println("[OUT]  " + aes.decrypt(input2, input3));
-                        
-
                     }
                 }
-
-
             }
         }
         //catch(StringIndexOutOfBoundsException exception) {
@@ -1274,6 +1209,4 @@ public class Main {
             System.out.println("Operation failed: Invalid input.");
         }
     }
-
-
 }
