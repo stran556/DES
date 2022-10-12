@@ -3,7 +3,7 @@ package company;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
+import java.math.*;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
@@ -173,10 +173,16 @@ public class Main {
                     }
                 }
             }
+            if(enc == 3){ //RSA...
+                BigInteger b = new BigInteger("91238192839182398192389391829839182398938192");
+                BigInteger s = new BigInteger("788934719827317289378127837137237");
+
+
+
+                System.out.println(b.multiply(s));
+                System.out.println("oh hello.");
+            }
         }
-        //catch(StringIndexOutOfBoundsException exception) {
-        //    System.out.println("Operation failed: Ensure all input is in 64-bit hexadecimal (Allowed: [0123456789abcdef])");
-        //}
         catch(InputMismatchException exception){
             System.out.println("Operation failed: Invalid input.");
         }
