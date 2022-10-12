@@ -126,21 +126,19 @@ public class Main {
                     String text = "4D41444953454E534B494E4E45523036";
                     String key = "5445584153564F4C4C455942414C4C31";
                     System.out.println();
-                    String ciphertext = aes.encrypt(text, key);
 
                     System.out.println("\n________________[FILE]________________");
-                    Thread.sleep(250);
+                    Thread.sleep(50);
                     System.out.println("[TXT] " + text.toLowerCase());
                     System.out.println("[KEY] " + key.toLowerCase());
-                    Thread.sleep(250);
-                    System.out.println("\n_____________[ENCRYPTION]_____________");
-                    Thread.sleep(250);
+                    Thread.sleep(50);
+                    String ciphertext = aes.encrypt(text, key);
+                    System.out.println("\n_______________[OUTPUT]_______________");
+                    Thread.sleep(50);
                     System.out.println("[ENC] " + ciphertext);
-                    Thread.sleep(250);
-                    System.out.println("\n_____________[DECRYPTION]_____________");
-                    Thread.sleep(250);
-                    System.out.println("[DEC] " + aes.decrypt(ciphertext, key));
-                    Thread.sleep(250);
+                    System.out.println("[DEC] " + aes.decrypt(text, key));
+                    Thread.sleep(50);
+                    System.out.println();
                 }
 
                 if(typeInput == 2){
