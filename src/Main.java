@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.math.*;
+import java.util.Timer;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
@@ -176,8 +177,8 @@ public class Main {
             if(enc == 3){ //RSA...
                 BigInteger one = new BigInteger("1"); //hardcode 1 into biginteger...
 
-                BigInteger p = new BigInteger("607");
-                BigInteger q = new BigInteger("313");
+                BigInteger p = new BigInteger("19997");
+                BigInteger q = new BigInteger("329503");
                 BigInteger n = new BigInteger(p.multiply(q).toString());
                 BigInteger t = new BigInteger(p.subtract(one).multiply(q.subtract(one)).toString());
                 BigInteger m = new BigInteger("77");
@@ -185,6 +186,9 @@ public class Main {
                 
                 BigInteger e = new BigInteger("2");
                 BigInteger d = new BigInteger("0");
+
+                Timer timer = new Timer();
+                long startTime = System.currentTimeMillis();
 
                 while(e.compareTo(t) < 0){
                     if(t.gcd(e).compareTo(one) == 0){
@@ -201,9 +205,9 @@ public class Main {
                     }
                     e = e.add(one);
                 }
-
+                System.out.println((double)(System.currentTimeMillis() - startTime) / 1000 + " seconds.");
                 System.out.println(p.multiply(q));
-                System.out.println("EDmodT=1 >>> " + e + " x " + d + " % " + t + " = " + e.multiply(d).mod(t));
+                System.out.println("EDmodT=1 >>> (" + e + " x " + d + ") % " + t + " = " + e.multiply(d).mod(t));
             }
         }
         catch(InputMismatchException exception){
