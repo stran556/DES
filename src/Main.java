@@ -174,13 +174,36 @@ public class Main {
                 }
             }
             if(enc == 3){ //RSA...
-                BigInteger b = new BigInteger("91238192839182398192389391829839182398938192");
-                BigInteger s = new BigInteger("788934719827317289378127837137237");
+                BigInteger one = new BigInteger("1"); //hardcode 1 into biginteger...
 
+                BigInteger p = new BigInteger("607");
+                BigInteger q = new BigInteger("313");
+                BigInteger n = new BigInteger(p.multiply(q).toString());
+                BigInteger t = new BigInteger(p.subtract(one).multiply(q.subtract(one)).toString());
+                BigInteger m = new BigInteger("77");
 
+                
+                BigInteger e = new BigInteger("2");
+                BigInteger d = new BigInteger("0");
 
-                System.out.println(b.multiply(s));
-                System.out.println("oh hello.");
+                while(e.compareTo(t) < 0){
+                    if(t.gcd(e).compareTo(one) == 0){
+                        while(d.compareTo(t) < 0){
+                            if(e.multiply(d).mod(t).compareTo(one) == 0){
+                                System.out.println("e = " + e + ", d = " + d);
+                                break;
+                            }
+                            else{
+                            d = d.add(one);
+                            }
+                        }
+                        break;
+                    }
+                    e = e.add(one);
+                }
+
+                System.out.println(p.multiply(q));
+                System.out.println("EDmodT=1 >>> " + e + " x " + d + " % " + t + " = " + e.multiply(d).mod(t));
             }
         }
         catch(InputMismatchException exception){
