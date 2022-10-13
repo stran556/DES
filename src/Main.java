@@ -12,7 +12,7 @@ public class Main {
         try {
             Scanner cs = new Scanner(System.in);
             System.out.println("|--[ALG]");
-            System.out.println("|    [1]DES \n|    [2]AES ");
+            System.out.println("|    [1]DES \n|    [2]AES \n|    [3]RSA");
             System.out.print("|     ");
             int enc = cs.nextInt();
 
@@ -175,39 +175,41 @@ public class Main {
                 }
             }
             if(enc == 3){ //RSA...
-                BigInteger one = new BigInteger("1"); //hardcode 1 into biginteger...
+                RSA rsa = new RSA();
+                System.out.println("|------[RSA]");
+                System.out.println("|        [1]FILE \n|        [2]MANUAL\n|        [3]CREATE KEY");
+                Scanner sc = new Scanner(System.in);
+                int typeInput = sc.nextInt();
 
-                BigInteger p = new BigInteger("19997");
-                BigInteger q = new BigInteger("329503");
-                BigInteger n = new BigInteger(p.multiply(q).toString());
-                BigInteger t = new BigInteger(p.subtract(one).multiply(q.subtract(one)).toString());
-                BigInteger m = new BigInteger("77");
+                if(typeInput == 1){ //FILE
 
-                
-                BigInteger e = new BigInteger("2");
-                BigInteger d = new BigInteger("0");
-
-                Timer timer = new Timer();
-                long startTime = System.currentTimeMillis();
-
-                while(e.compareTo(t) < 0){
-                    if(t.gcd(e).compareTo(one) == 0){
-                        while(d.compareTo(t) < 0){
-                            if(e.multiply(d).mod(t).compareTo(one) == 0){
-                                System.out.println("e = " + e + ", d = " + d);
-                                break;
-                            }
-                            else{
-                            d = d.add(one);
-                            }
-                        }
-                        break;
-                    }
-                    e = e.add(one);
                 }
-                System.out.println((double)(System.currentTimeMillis() - startTime) / 1000 + " seconds.");
-                System.out.println(p.multiply(q));
-                System.out.println("EDmodT=1 >>> (" + e + " x " + d + ") % " + t + " = " + e.multiply(d).mod(t));
+
+                if(typeInput == 2){ //MANUAL
+
+                }
+
+                if(typeInput == 3){ //CREATE KEY (if values not known)
+                    System.out.println("|----------[CREATE KEY]");
+                    System.out.println("|            [1]KEY-GEN \n|            [2]PRIME-GEN "); 
+                    Scanner sc3 = new Scanner(System.in);
+                    int keyInput = sc3.nextInt();
+
+                    if(keyInput == 1){ //KEY-GEN
+                        System.out.println("Input p and q (two primes)");
+                        Scanner sc4 = new Scanner(System.in);
+                        
+                        rsa.generateKey(sc4.next(), sc4.next());
+                    }
+                    if(keyInput == 2){ //PRIME-GEN
+                        System.out.println("Input number of primes and digits");
+                        Scanner sc4 = new Scanner(System.in);
+                        
+
+                        rsa.generatePrime(sc4.nextInt(), sc4.nextInt());
+                    }
+
+                }
             }
         }
         catch(InputMismatchException exception){
