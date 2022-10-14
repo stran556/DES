@@ -71,8 +71,8 @@ public class RSA {
         BigInteger d = new BigInteger(reader.nextLine());
         BigInteger m = new BigInteger(input);
 
-        if(input.length() / 2 > n.toString().length()){
-            System.out.println("Input is too long for given encryption key.");
+        if(input.length() > d.toString().length()){
+            System.out.println("Input is too long for future decryption key.");
             System.exit(0);
         }
 
@@ -94,13 +94,19 @@ public class RSA {
         BigInteger e = new BigInteger(reader.nextLine());
         BigInteger d = new BigInteger(reader.nextLine());
         BigInteger c = new BigInteger(input);
-
+        
         BigInteger output = new BigInteger("0");
-
+        
         reader.close();
 
         output = c.modPow(d, n);
 
-        return asciiToString(output.toString());
+        if(output.toString().length() % 2 != 0){
+            System.out.println("Input is invalid.");
+            System.exit(0);
+        }
+
+
+        return asciiToString(output.toString()).toLowerCase();
     }
 }
