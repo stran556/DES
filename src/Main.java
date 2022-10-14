@@ -193,10 +193,10 @@ public class Main {
                     BufferedReader br = new BufferedReader(new FileReader("importRSA.txt"));
                     check = br.readLine();
                     if(check == null){
-                        System.out.println("|         - USE KEY FROM FILE\n|        [2]ENTER KEY MANUALLY\n|        [3]CREATE KEY");
+                        System.out.println("|         - IMPORT KEY FROM FILE\n|        [2]ENTER KEY MANUALLY\n|        [3]CREATE KEY");
                     }
                     else{
-                        System.out.println("|        [1]USE KEY FROM FILE \n|        [2]ENTER KEY MANUALLY\n|        [3]CREATE KEY");
+                        System.out.println("|        [1]IMPORT KEY FROM FILE \n|        [2]ENTER KEY MANUALLY\n|        [3]CREATE KEY");
                     }
                 }catch(IOException e){
                     System.out.println("Error.");
@@ -239,13 +239,13 @@ public class Main {
 
                 if(typeInput == 3){ //CREATE KEY (if values not known)
                     System.out.println("|----------[CREATE KEY]");
-                    System.out.println("|            [1]KEY-GEN \n|            [2]PRIME-GEN "); 
+                    System.out.println("|            [1]INPUT PRIMES TO GENERATE KEY\n|            [2]GENERATE AND IMPORT TWO PRIMES"); 
                     Scanner sc3 = new Scanner(System.in);
                     System.out.print("|             ");
                     int keyInput = sc3.nextInt();
 
                     if(keyInput == 1){ //KEY-GEN
-                        System.out.println("Input p and q (two primes)");
+                        System.out.println("Input p and q (preferably two large primes)");
                         Scanner sc4 = new Scanner(System.in);
                         rsaKeyInfo = rsa.generateKey(sc4.next(), sc4.next());
                         
@@ -279,7 +279,6 @@ public class Main {
                         
                         rsa.generatePrime(sc4.nextInt(), sc4.nextInt());
                     }
-
                 }
             }
         }
