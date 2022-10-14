@@ -5,7 +5,9 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.math.*;
 import java.util.Timer;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -181,15 +183,33 @@ public class Main {
             if(enc == 3){ //RSA...
                 RSA rsa = new RSA();
                 BigInteger rsaKeyInfo[] = new BigInteger[6];
-
+                String check = "";
                 System.out.println("|------[RSA]");
-                System.out.println("|        [1]FILE \n|        [2]MANUAL\n|        [3]CREATE KEY");
+                try{
+                    BufferedReader br = new BufferedReader(new FileReader("importRSA.txt"));
+                    check = br.readLine();
+                    if(check == null){
+                        System.out.println("|         - FILE\n|        [2]MANUAL\n|        [3]CREATE KEY");
+                    }
+                    else{
+                        System.out.println("|        [1]FILE \n|        [2]MANUAL\n|        [3]CREATE KEY");
+                    }
+                }catch(IOException e){
+                    System.out.println("Error.");
+                }
                 Scanner sc = new Scanner(System.in);
                 System.out.print("|         ");
                 int typeInput = sc.nextInt();
 
                 if(typeInput == 1){ //FILE
-
+                    if(check == null){
+                        System.out.println("No data found. Generate key data with [CREATE KEY] and try again.");
+                        System.exit(0);
+                    }
+                    else{
+                        System.out.println("File contents found!");
+                    }
+                    
                 }
 
                 if(typeInput == 2){ //MANUAL
@@ -230,10 +250,6 @@ public class Main {
                             System.out.println("Write error.");
                             e.printStackTrace();
                         }
-
-
-
-
                         System.out.println("Key values generated and written to FILE.");
                     }
                     if(keyInput == 2){ //PRIME-GEN
