@@ -5,6 +5,10 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.math.*;
 import java.util.Timer;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
@@ -176,9 +180,12 @@ public class Main {
             }
             if(enc == 3){ //RSA...
                 RSA rsa = new RSA();
+                BigInteger rsaKeyInfo[] = new BigInteger[6];
+
                 System.out.println("|------[RSA]");
                 System.out.println("|        [1]FILE \n|        [2]MANUAL\n|        [3]CREATE KEY");
                 Scanner sc = new Scanner(System.in);
+                System.out.print("|         ");
                 int typeInput = sc.nextInt();
 
                 if(typeInput == 1){ //FILE
@@ -193,19 +200,46 @@ public class Main {
                     System.out.println("|----------[CREATE KEY]");
                     System.out.println("|            [1]KEY-GEN \n|            [2]PRIME-GEN "); 
                     Scanner sc3 = new Scanner(System.in);
+                    System.out.print("|             ");
                     int keyInput = sc3.nextInt();
 
                     if(keyInput == 1){ //KEY-GEN
                         System.out.println("Input p and q (two primes)");
                         Scanner sc4 = new Scanner(System.in);
+                        rsaKeyInfo = rsa.generateKey(sc4.next(), sc4.next());
                         
-                        rsa.generateKey(sc4.next(), sc4.next());
+                        //Write to file: order -> p, q, n, t, e, d
+                        try {
+                            File file = new File("importRSA.txt");
+                            if (file.createNewFile()) {
+                              System.out.print("");
+                            } else {
+                              System.out.print("");
+                            }
+                        } catch (IOException e) {
+                            System.out.println("File error.");
+                            e.printStackTrace();
+                        }
+                        try {
+                            FileWriter writer = new FileWriter("importRSA.txt");
+                            for(int i = 0; i < 6; i++){
+                                writer.write(rsaKeyInfo[i].toString() + "\n");
+                            }
+                            writer.close();
+                        } catch (IOException e) {
+                            System.out.println("Write error.");
+                            e.printStackTrace();
+                        }
+
+
+
+
+                        System.out.println("Key values generated and written to FILE.");
                     }
                     if(keyInput == 2){ //PRIME-GEN
                         System.out.println("Input number of primes and digits");
                         Scanner sc4 = new Scanner(System.in);
                         
-
                         rsa.generatePrime(sc4.nextInt(), sc4.nextInt());
                     }
 
