@@ -5,15 +5,19 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.math.*;
 import java.util.Timer;
+
+import javax.sound.sampled.SourceDataLine;
+
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, FileNotFoundException {
 
         try {
             Scanner cs = new Scanner(System.in);
@@ -182,17 +186,17 @@ public class Main {
             }
             if(enc == 3){ //RSA...
                 RSA rsa = new RSA();
-                BigInteger rsaKeyInfo[] = new BigInteger[6];
+                BigInteger rsaKeyInfo[] = new BigInteger[3];
                 String check = "";
                 System.out.println("|------[RSA]");
                 try{
                     BufferedReader br = new BufferedReader(new FileReader("importRSA.txt"));
                     check = br.readLine();
                     if(check == null){
-                        System.out.println("|         - FILE\n|        [2]MANUAL\n|        [3]CREATE KEY");
+                        System.out.println("|         - USE KEY FROM FILE\n|        [2]ENTER KEY MANUALLY\n|        [3]CREATE KEY");
                     }
                     else{
-                        System.out.println("|        [1]FILE \n|        [2]MANUAL\n|        [3]CREATE KEY");
+                        System.out.println("|        [1]USE KEY FROM FILE \n|        [2]ENTER KEY MANUALLY\n|        [3]CREATE KEY");
                     }
                 }catch(IOException e){
                     System.out.println("Error.");
@@ -207,9 +211,26 @@ public class Main {
                         System.exit(0);
                     }
                     else{
-                        System.out.println("File contents found!");
+                        Scanner sc12 = new Scanner(System.in);
+                        System.out.println("|----------[FILE]");
+                        System.out.println("|            [1]ENCRYPT \n|            [2]DECRYPT ");
+                        System.out.print("|             ");
+                        int fileInput = sc12.nextInt();
+                        if(fileInput == 1){
+                            Scanner sc2 = new Scanner(System.in);
+                            System.out.print("[ENCRYPT] ");
+                            String input = sc2.nextLine();
+
+                            System.out.println("\n[CIPHERTEXT] " + rsa.encrypt(input));
+                        }
+                        if(fileInput == 2){
+                            Scanner sc2 = new Scanner(System.in);
+                            System.out.print("[DECRYPT] ");
+                            String input = sc2.nextLine();
+
+                            System.out.println("\n[PLAINTEXT] " + rsa.decrypt(input));
+                        }
                     }
-                    
                 }
 
                 if(typeInput == 2){ //MANUAL
@@ -242,7 +263,7 @@ public class Main {
                         }
                         try {
                             FileWriter writer = new FileWriter("importRSA.txt");
-                            for(int i = 0; i < 6; i++){
+                            for(int i = 0; i < 3; i++){
                                 writer.write(rsaKeyInfo[i].toString() + "\n");
                             }
                             writer.close();
@@ -250,7 +271,7 @@ public class Main {
                             System.out.println("Write error.");
                             e.printStackTrace();
                         }
-                        System.out.println("Key values generated and written to FILE.");
+                        System.out.println("Key values successfully generated and written to FILE.");
                     }
                     if(keyInput == 2){ //PRIME-GEN
                         System.out.println("Input number of primes and digits");
