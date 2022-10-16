@@ -90,11 +90,17 @@ public class AES {
     }
 
     String asciiToHex(String input){
-        input = input.toUpperCase();
-
         String builder = "";
         for(int i = 0; i < input.length(); i++){
             builder = builder + Integer.toHexString((int)input.charAt(i));
+        }
+        return builder;
+    }
+
+    String hexToASCII(String input){
+        String builder = "";
+        for(int i = 0; i < input.length(); i = i + 2){
+            builder = builder + (char)Integer.parseInt(input.substring(i, i + 2), 16);
         }
         return builder;
     }
