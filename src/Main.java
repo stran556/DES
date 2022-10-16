@@ -167,7 +167,8 @@ public class Main {
                         String input2 = sc2.nextLine();
                         System.out.print("[KEY]  ");
                         String input3 = sc2.nextLine();
-                        System.out.println("[OUT]  " + aes.encrypt(input2, input3));
+                        String cipher = aes.encrypt(input2, input3);
+                        System.out.println("[OUT]  " + cipher);
 
                     }
                     if(manualInput == 2){
@@ -181,7 +182,8 @@ public class Main {
                         System.out.println("128BIT[ASCII___________]");
                         System.out.print("[KEY]  ");
                         String input3 = sc2.nextLine();
-                        System.out.println("[OUT]  " + aes.decrypt(input2, input3));
+                        String plain = aes.decrypt(input2, input3);
+                        System.out.println("[OUT]  " + plain + " = " + aes.hexToASCII(plain));
                     }
                 }
             }
