@@ -89,18 +89,18 @@ public class AES {
         return input.toLowerCase();
     }
 
-    String asciiToHex(String input){
-        String builder = "";
-        for(int i = 0; i < input.length(); i++){
-            builder = builder + Integer.toHexString((int)input.charAt(i));
-        }
-        return builder;
-    }
-
     String hexToASCII(String input){
         String builder = "";
         for(int i = 0; i < input.length(); i = i + 2){
             builder = builder + (char)Integer.parseInt(input.substring(i, i + 2), 16);
+        }
+        return builder;
+    }
+
+    String asciiToHex(String input){
+        String builder = "";
+        for(int i = 0; i < input.length(); i++){
+            builder = builder + Integer.toHexString((int)input.charAt(i));
         }
         return builder;
     }
@@ -117,6 +117,16 @@ public class AES {
         return block;
     }
 
+    String blockToString(String[][] block){
+        String text = "";
+        for(int i = 0; i < 4; i++){
+            for(int ii = 0; ii < 4; ii++){
+                text = text + block[i][ii];
+            }
+        }
+        return text;
+    }
+
     String[][] arrayToBlock(String input[]){
         String block[][] = new String[4][4];
         int counter = 0;
@@ -127,16 +137,6 @@ public class AES {
             }
         }
         return block;
-    }
-
-    String blockToString(String[][] block){
-        String text = "";
-        for(int i = 0; i < 4; i++){
-            for(int ii = 0; ii < 4; ii++){
-                text = text + block[i][ii];
-            }
-        }
-        return text;
     }
 
     String[] blockToArray(String[][] block){

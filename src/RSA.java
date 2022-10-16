@@ -25,7 +25,6 @@ public class RSA {
             e = e.add(one);
         }
 
-
         array[0] = n;
         array[1] = e;
         array[2] = d;
@@ -58,6 +57,8 @@ public class RSA {
         }
         return builder;
     }
+
+    
 
     String encrypt(String input) throws FileNotFoundException{
         input = stringToASCII(input);
@@ -105,7 +106,6 @@ public class RSA {
             System.out.println("Input is invalid.");
             System.exit(0);
         }
-
 
         return asciiToString(output.toString()).toLowerCase();
     }

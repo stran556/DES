@@ -1,13 +1,8 @@
 //Data Encryption Standard
 package company;
-import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.math.*;
-import java.util.Timer;
-
-import javax.sound.sampled.SourceDataLine;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -196,10 +191,10 @@ public class Main {
                     BufferedReader br = new BufferedReader(new FileReader("importRSA.txt"));
                     check = br.readLine();
                     if(check == null){
-                        System.out.println("|         - IMPORT KEY FROM FILE\n|        [2]ENTER KEY MANUALLY\n|        [3]CREATE KEY");
+                        System.out.println("|         - IMPORT KEY FROM FILE\n|        [2]ENTER KEY MANUALLY\n|        [3]CREATE NEW KEY");
                     }
                     else{
-                        System.out.println("|        [1]IMPORT KEY FROM FILE \n|        [2]ENTER KEY MANUALLY\n|        [3]CREATE KEY");
+                        System.out.println("|        [1]IMPORT KEY FROM FILE \n|        [2]ENTER KEY MANUALLY\n|        [3]CREATE NEW KEY");
                     }
                 }catch(IOException e){
                     System.out.println("Error.");
@@ -210,7 +205,7 @@ public class Main {
 
                 if(typeInput == 1){ //FILE
                     if(check == null){
-                        System.out.println("No data found. Generate key data with [CREATE KEY] and try again.");
+                        System.out.println("No data found. Generate key data with [CREATE NEW KEY] and try again.");
                         System.exit(0);
                     }
                     else{
