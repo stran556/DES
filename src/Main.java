@@ -134,14 +134,14 @@ public class Main {
                 System.out.print("|         ");
                 int typeInput = sc.nextInt();
                 if(typeInput == 1) {
-                    String text = "4D41444953454E534B494E4E45523036";
-                    String key = "5445584153564F4C4C455942414C4C31";
+                    String text = "MADISENSKINNER06"; //4D41444953454E534B494E4E45523036
+                    String key = "TEXASVOLLEYBALL1"; //5445584153564F4C4C455942414C4C31
                     System.out.println();
 
                     System.out.println("\n________________[FILE]________________");
                     Thread.sleep(50);
-                    System.out.println("[TXT] " + text.toLowerCase());
-                    System.out.println("[KEY] " + key.toLowerCase());
+                    System.out.println("[TXT] " + text);
+                    System.out.println("[KEY] " + key);
                     Thread.sleep(50);
                     String ciphertext = aes.encrypt(text, key);
                     System.out.println("\n_______________[OUTPUT]_______________");
@@ -161,7 +161,7 @@ public class Main {
                     if(manualInput == 1){
                         System.out.println("|--------------[ENCRYPT]");
                         System.out.println();
-                        System.out.println("128BIT[________________________________]");
+                        System.out.println("128BIT[________________]");
                         System.out.print("[TXT]  ");
                         Scanner sc2 = new Scanner(System.in);
                         String input2 = sc2.nextLine();
@@ -174,10 +174,11 @@ public class Main {
                         
                         System.out.println("|--------------[DECRYPT]");
                         System.out.println();
-                        System.out.println("128BIT[________________________________]");
+                        System.out.println("128BIT[HEX_____________________________]");
                         System.out.print("[TXT]  ");
                         Scanner sc2 = new Scanner(System.in);
                         String input2 = sc2.nextLine();
+                        System.out.println("128BIT[ASCII___________]");
                         System.out.print("[KEY]  ");
                         String input3 = sc2.nextLine();
                         System.out.println("[OUT]  " + aes.decrypt(input2, input3));
