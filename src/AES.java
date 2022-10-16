@@ -89,6 +89,16 @@ public class AES {
         return input.toLowerCase();
     }
 
+    String asciiToHex(String input){
+        input = input.toUpperCase();
+
+        String builder = "";
+        for(int i = 0; i < input.length(); i++){
+            builder = builder + Integer.toHexString((int)input.charAt(i));
+        }
+        return builder;
+    }
+
     String[][] stringToBlock(String input){ //COLUMN-MAJOR
         String block[][] = new String[4][4];
         int counter = 0;
@@ -517,18 +527,18 @@ public class AES {
         int len = input.length();
         if(input.length() < 32){
             input = input + "00000000000000000000000000000000".substring(input.length());
-            System.out.println(name + " too short, padding with " + (32 - len) + " zero(s) (" + ((32 - len) * 4) + " bits)");
+            System.out.println(name + " too short, padding with " + ((32 - len) * 4) + " bits");
         }
         if(input.length() > 32){
             input = input.substring(0, 32);
-            System.out.println(name + " too long, trimming off " + (len - 32) + " character(s) (" + ((len - 32) * 4) + " bits)");
+            System.out.println(name + " too long, trimming off " + ((len - 32) * 4) + " bits");
         }
         return input;
     }
 
     String encrypt(String text, String key){
-        text = handleInput(text, "TXT");
-        key = handleInput(key, "KEY");    
+        text = handleInput(asciiToHex(text), "TXT");
+        key = handleInput(asciiToHex(key), "KEY");    
 
         String keySchedule[] = keySchedule(key);
         String keyBlock[] = new String[16]; //round key array (16 bytes)
@@ -652,7 +662,7 @@ public class AES {
 
     String decrypt(String text, String key) { //keys used in reverse order from key schedule
         text = handleInput(text, "TXT");
-        key = handleInput(key, "KEY"); 
+        key = handleInput(asciiToHex(key), "KEY"); 
         
         String keySchedule[] = keySchedule(key);
         String keyBlock[] = new String[16]; //round key array (16 bytes)
