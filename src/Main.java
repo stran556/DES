@@ -17,7 +17,7 @@ public class Main {
         try {
             Scanner cs = new Scanner(System.in);
             System.out.println("|--[ALG]");
-            System.out.println("|    [1]DES \n|    [2]AES \n|    [3]RSA");
+            System.out.println("|    [1]DES \n|    [2]AES \n|    [3]RSA\n|    [4]SHA");
             System.out.print("|     ");
             int enc = cs.nextInt();
 
@@ -232,7 +232,7 @@ public class Main {
                 }
 
                 if(typeInput == 2){ //MANUAL
-
+                    
                 }
 
                 if(typeInput == 3){ //CREATE KEY (if values not known)
@@ -278,6 +278,34 @@ public class Main {
                         rsa.generatePrime(sc4.nextInt(), sc4.nextInt());
                     }
                 }
+            }
+            if(enc == 4){ //SHA...
+                SHA sha = new SHA();
+                System.out.println("|------[SHA]");
+                Scanner c = new Scanner(System.in);
+                System.out.println("|        [1]FILE \n|        [2]MANUAL ");
+                System.out.print("          ");
+                int input = c.nextInt();
+                if(input == 1){
+                    
+                }
+                if(input == 2){
+                    Scanner sc2;
+                    String text = "_";
+                    while (!text.equals("")) {
+                        System.out.print("[I]");
+                        sc2 = new Scanner(System.in);
+                        text = sc2.nextLine();
+                        if (!text.equals("")) {
+                            System.out.print("[O]");
+                            System.out.println(sha.hash(text));
+                            System.out.println();
+                        } else {
+                            System.out.println("Exited program.");
+                        }
+                    }
+                }
+
             }
         }
         catch(InputMismatchException exception){
