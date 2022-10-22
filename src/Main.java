@@ -284,7 +284,7 @@ public class Main {
                 System.out.println("|------[SHA]");
                 Scanner c = new Scanner(System.in);
                 System.out.println("|        [1]FILE \n|        [2]MANUAL ");
-                System.out.print("          ");
+                System.out.print("|         ");
                 int input = c.nextInt();
                 if(input == 1){
                     
@@ -292,6 +292,7 @@ public class Main {
                 if(input == 2){
                     Scanner sc2;
                     String text = "_";
+                    System.out.println("|----------[MANUAL]\n");
                     while (!text.equals("")) {
                         System.out.print("[I]");
                         sc2 = new Scanner(System.in);
