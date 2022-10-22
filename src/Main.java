@@ -2,6 +2,9 @@
 package company;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import javax.xml.namespace.QName;
+
 import java.math.*;
 import java.io.BufferedReader;
 import java.io.File;
@@ -286,9 +289,34 @@ public class Main {
                 System.out.println("|        [1]FILE \n|        [2]MANUAL ");
                 System.out.print("|         ");
                 int input = c.nextInt();
+
                 if(input == 1){
+                    c = new Scanner(System.in);
+                    System.out.print("\nEnter file: ");
+                    String fileInput = c.nextLine();
+                    File file = new File(fileInput);
+                    try {
+                        Scanner f = new Scanner(file);
+                        File fileOut = new File("SHA.txt");
+                        if (fileOut.createNewFile()) {
+                          System.out.print("");
+                        } else {
+                          System.out.print("");
+                        }
                     
+                        FileWriter writer = new FileWriter(fileOut);  
+                        while(f.hasNextLine()){
+                            writer.write(sha.hash(f.nextLine()));
+                            writer.write("\n");
+                        }
+                        writer.close();
+                    } catch (IOException e) {
+                        System.out.println("Error.");
+                        e.printStackTrace();
+                    }
+                    System.out.println("Complete. Contents written to SHA.txt");
                 }
+
                 if(input == 2){
                     Scanner sc2;
                     String text = "_";
