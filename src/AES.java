@@ -525,10 +525,10 @@ public class AES {
 
     String handleInput(String input, String name){
 
-        if(!input.matches("-?[0-9a-fA-F]+")){
-            System.out.print("\nOperation Failed. Ensure input is not empty and is in hexadecimal.");
-            System.exit(0);
-        }
+        //if(!input.matches("-?[0-9a-fA-F]+")){
+        //    System.out.print("\nOperation Failed. Ensure input is not empty and is in hexadecimal.");
+        //    System.exit(0);
+        //}
 
         int len = input.length();
         if(input.length() < 32){
