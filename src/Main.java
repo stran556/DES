@@ -291,6 +291,7 @@ public class Main {
                 int input = c.nextInt();
 
                 if(input == 1){
+                    System.out.print("|          [FILE]");
                     c = new Scanner(System.in);
                     System.out.print("\nEnter file: ");
                     String fileInput = c.nextLine();
