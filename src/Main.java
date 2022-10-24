@@ -145,7 +145,7 @@ public class Main {
                     System.out.println("\n_______________[OUTPUT]_______________");
                     Thread.sleep(50);
                     System.out.println("[ENC] " + ciphertext);
-                    System.out.println("[DEC] " + aes.decrypt(text, key));
+                    System.out.println("[DEC] " + aes.decrypt(ciphertext, key));
                     Thread.sleep(50);
                     System.out.println();
                 }
@@ -275,10 +275,10 @@ public class Main {
                         System.out.println("Key values successfully generated and written to FILE.");
                     }
                     if(keyInput == 2){ //PRIME-GEN
-                        System.out.println("Input number of primes and digits");
+                        System.out.println("Input number of digits");
                         Scanner sc4 = new Scanner(System.in);
                         
-                        rsa.generatePrime(sc4.nextInt(), sc4.nextInt());
+                        System.out.println(rsa.generatePrime(sc4.nextInt()));
                     }
                 }
             }
