@@ -14,7 +14,7 @@ public class RSA {
         BigInteger q = new BigInteger(input2);
         BigInteger n = new BigInteger(p.multiply(q).toString());
         BigInteger t = new BigInteger(p.subtract(one).multiply(q.subtract(one)).toString()); //totient function
-        BigInteger e = new BigInteger("2"); //Must be greater than 1
+        BigInteger e = new BigInteger("65537"); //Must be greater than 1
         BigInteger d = new BigInteger("0");
 
         while(e.compareTo(t) < 0){
@@ -32,9 +32,57 @@ public class RSA {
         return array;
     }
 
-    void generatePrime(int num, int digits){
-        System.out.println(num + " numbers " + digits + " digits");
+    String generatePrime(int digits){
+        String lowerLimit = "1";
+        String upperLimit = "9";
+        for(int i = 0; i < digits - 1; i++){
+            lowerLimit = lowerLimit + "0";
+            upperLimit = upperLimit + "9";
+        }
+
+        BigInteger lower = new BigInteger(lowerLimit);
+        BigInteger upper = new BigInteger(upperLimit);
+
+        BigInteger result;
+        Random rand = new Random();
+        Boolean isPrime = false;
+        int counter;
+        do{
+            result = new BigInteger(upper.bitLength(), rand);
+            
+            if(result.toString().length() <= 18){ //bailliePSW
+                isPrime = testBailliePSW(result);
+            }
+            else{ //millerRabin
+                counter = 0;
+                do{
+                    isPrime = testMillerRabin(result);
+                    counter++;
+                }while(isPrime && counter < 10);
+                if(counter == 10){
+                    isPrime = true;
+                }
+                else{
+                    isPrime = false;
+                }
+            }
+        }while((result.compareTo(upper) == 1) || (result.compareTo(lower) == -1) || !isPrime);
+
+        
+
+        return result.toString();
     }
+
+    Boolean testBailliePSW(BigInteger num){
+
+        return true;
+    }
+
+    Boolean testMillerRabin(BigInteger num){
+
+        return true;
+    }
+
 
     String stringToASCII(String input){
         input = input.toUpperCase();
@@ -57,8 +105,6 @@ public class RSA {
         }
         return builder;
     }
-
-    
 
     String encrypt(String input) throws FileNotFoundException{
         input = stringToASCII(input);
@@ -106,7 +152,7 @@ public class RSA {
             System.out.println("Input is invalid.");
             System.exit(0);
         }
-
+        
         return asciiToString(output.toString()).toLowerCase();
     }
 }
