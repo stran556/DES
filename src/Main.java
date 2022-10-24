@@ -2,9 +2,6 @@
 package company;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
-import javax.xml.namespace.QName;
-
 import java.math.*;
 import java.io.BufferedReader;
 import java.io.File;
