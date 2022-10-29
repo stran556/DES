@@ -74,7 +74,8 @@ public class RSA {
     }
 
     Boolean testBailliePSW(BigInteger num){
-
+        //perform trial division by small prime number
+        //perform base 2 strong probable prime test
         return true;
     }
 
