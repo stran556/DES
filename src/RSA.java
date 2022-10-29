@@ -76,11 +76,14 @@ public class RSA {
     Boolean testBailliePSW(BigInteger num){
         //perform trial division by small prime number
         //perform base 2 strong probable prime test
+        //find first D in sequence 5, -7, 9, -11, 13, -15 where Jacobi symbol = -1
+        //perform strong Lucas probable prime test on n using parameters D, P, and Q
+
         return true;
     }
 
     Boolean testMillerRabin(BigInteger num){
-
+        
         return true;
     }
 
